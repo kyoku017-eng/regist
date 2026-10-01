@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>受講登録ナビ 2026年度</title>
+<style>
+:root{
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#eff6ff;
+  --success:#10b981;--success-bg:#ecfdf5;
+  --warning:#f59e0b;--warning-bg:#fffbeb;
+  --danger:#ef4444;--danger-bg:#fef2f2;
+  --text:#1e293b;--text-muted:#64748b;
+  --bg:#f8fafc;--card:#fff;--border:#e2e8f0;--radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{margin:0;padding:0 0 88px;background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  color:var(--text);}
+
+/* ─── ヘッダー ─── */
+.hdr{background:var(--primary);color:#fff;padding:0 16px;height:50px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:30;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.hdr-title{font-size:15px;font-weight:700;}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.grade-badge{font-size:11px;font-weight:700;
+  background:rgba(255,255,255,.25);padding:3px 10px;border-radius:999px;}
+
+/* ─── ウィザードステップバー ─── */
+.steps{display:flex;background:#fff;border-bottom:1px solid var(--border);
+  padding:0;position:sticky;top:50px;z-index:29;}
+.step-btn{flex:1;padding:10px 4px;font-size:12px;font-weight:700;
+  border:none;background:transparent;cursor:pointer;
+  color:var(--text-muted);border-bottom:3px solid transparent;transition:.15s;}
+.step-btn.active{color:var(--primary);border-bottom-color:var(--primary);}
+.step-btn .snum{display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:50%;font-size:10px;
+  background:#e2e8f0;color:var(--text-muted);margin-right:4px;}
+.step-btn.active .snum{background:var(--primary);color:#fff;}
+.step-btn.done .snum{background:var(--success);color:#fff;}
+
+/* ─── コンテナ ─── */
+.wrap{max-width:600px;margin:0 auto;padding:12px 14px;}
+.card{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+
+/* ─── フォーム部品 ─── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-group{margin-bottom:10px;}
+.form-group label{display:block;font-size:12px;font-weight:700;
+  margin-bottom:5px;color:var(--text);}
+.inp,.sel{width:100%;border:1.5px solid var(--border);border-radius:10px;
+  padding:9px 12px;font-size:15px;background:#fff;color:var(--text);
+  outline:none;transition:border-color .2s;font-family:inherit;}
+.inp:focus,.sel:focus{border-color:var(--primary);}
+.inp:read-only{background:#f8fafc;color:var(--text-muted);cursor:default;}
+
+/* ─── adminロード通知 ─── */
+.load-ok{background:var(--success-bg);border:1px solid #86efac;border-radius:8px;
+  padding:7px 12px;font-size:12px;color:#047857;margin-top:6px;display:none;}
+.load-ok.show{display:block;}
+
+/* ─── 修得済み科目サマリーボタン ─── */
+.completed-summary{display:flex;align-items:center;justify-content:space-between;
+  background:#f8fafc;border:1.5px solid var(--border);border-radius:10px;
+  padding:10px 14px;margin-top:4px;cursor:pointer;transition:.15s;}
+.completed-summary:hover{border-color:var(--primary);background:var(--primary-light);}
+.cs-left{display:flex;flex-direction:column;gap:2px;}
+.cs-label{font-size:11px;font-weight:700;color:var(--text-muted);}
+.cs-value{font-size:14px;font-weight:700;color:var(--text);}
+.cs-arrow{font-size:18px;color:var(--text-muted);}
+
+/* ─── 体育単位バー ─── */
+.pe-bar{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;
+  padding:10px 14px;margin-top:4px;}
+.pe-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.pe-label{font-size:12px;font-weight:700;color:#92400e;}
+.pe-sel{border:1.5px solid var(--border);border-radius:8px;
+  padding:6px 10px;font-size:14px;font-weight:700;background:#fff;outline:none;}
+.pe-badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;}
+.pe-ok{background:var(--success-bg);color:#047857;}
+.pe-warn{background:var(--warning-bg);color:#92400e;}
+.pe-ng{background:var(--danger-bg);color:#991b1b;}
+.pe-track{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;}
+.pe-fill{height:100%;border-radius:3px;transition:width .3s;}
+
+/* ─── 必修バナー（リアルタイム）─── */
+.req-mini{border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;
+  margin-bottom:12px;display:none;}
+.req-mini.show{display:block;}
+.req-mini.ok{background:var(--success-bg);border:1px solid #86efac;color:#047857;}
+.req-mini.ng{background:var(--warning-bg);border:1px solid #fcd34d;color:#92400e;}
+
+/* ─── 科目選択 ─── */
+.tab-bar{display:flex;background:#e2e8f0;padding:3px;border-radius:10px;margin-bottom:12px;}
+.tab-btn{flex:1;text-align:center;padding:8px;font-size:13px;font-weight:700;
+  border:none;background:transparent;border-radius:8px;cursor:pointer;color:var(--text-muted);}
+.tab-btn.active{background:#fff;color:var(--primary);box-shadow:0 1px 2px rgba(0,0,0,.1);}
+.period-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px;
+  -webkit-overflow-scrolling:touch;}
+.p-chip{flex:0 0 calc(33.333% - 6px);text-align:center;padding:9px 4px;
+  border:1.5px solid var(--border);border-radius:10px;
+  background:#fff;font-size:13px;font-weight:700;cursor:pointer;}
+.p-chip.active{border-color:var(--primary);background:var(--primary);color:#fff;}
+.slot-banner{background:var(--primary-light);color:var(--primary-dark);font-size:12px;
+  font-weight:600;padding:7px 12px;border-radius:8px;margin-bottom:10px;
+  display:flex;justify-content:space-between;}
+.filter-bar{display:flex;justify-content:space-between;align-items:center;
+  background:#f1f5f9;padding:7px 12px;border-radius:10px;margin-bottom:10px;}
+.filter-label{font-size:12px;font-weight:600;color:var(--text-muted);}
+.filter-btn{border:1px solid var(--border);background:#fff;border-radius:999px;
+  padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text);}
+.filter-btn.active{background:var(--primary-light);border-color:var(--primary);color:var(--primary);}
+
+/* ─── 科目カード ─── */
+.s-card{border:1.5px solid var(--border);border-radius:12px;background:#fff;
+  padding:11px 13px;margin-bottom:7px;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;transition:all .15s;}
+.s-card:active{transform:scale(0.98);}
+.s-card.sel{border-color:var(--primary);background:var(--primary-light);}
+.s-card.auto{border-color:var(--success);background:var(--success-bg);}
+.s-card.locked{background:#f8fafc;border-color:#e2e8f0;opacity:.6;cursor:not-allowed;}
+.s-chk{width:22px;height:22px;border-radius:6px;border:2px solid #cbd5e1;background:#fff;
+  display:flex;align-items:center;justify-content:center;flex:0 0 22px;margin-left:10px;}
+.s-card.sel .s-chk{border-color:var(--primary);background:var(--primary);}
+.s-card.auto .s-chk{border-color:var(--success);background:var(--success);}
+.s-chk::after{content:"✓";color:#fff;font-size:13px;font-weight:800;display:none;}
+.s-card.sel .s-chk::after,.s-card.auto .s-chk::after{display:block;}
+.s-info{flex:1;min-width:0;}
+.s-name{font-size:14px;font-weight:700;color:#0f172a;margin-bottom:3px;}
+.badges{display:flex;gap:3px;flex-wrap:wrap;}
+.badge{font-size:10px;font-weight:600;padding:2px 6px;border-radius:5px;}
+.b-unit{background:#e2e8f0;color:#334155;}
+.b-odd{background:#ede9fe;color:#6d28d9;}
+.b-even{background:#ffedd5;color:#c2410c;}
+.b-auto{background:var(--success-bg);color:var(--success);}
+.b-err{font-size:11px;color:var(--danger);margin-top:3px;}
+
+/* ─── フッターバー ─── */
+.foot{position:fixed;bottom:0;left:0;right:0;background:#fff;
+  border-top:1px solid var(--border);
+  padding:9px 16px env(safe-area-inset-bottom,9px);
+  z-index:40;box-shadow:0 -4px 12px rgba(0,0,0,.06);
+  display:flex;justify-content:space-between;align-items:center;}
+.foot-left{display:flex;flex-direction:column;cursor:pointer;}
+.foot-lbl{font-size:11px;color:var(--text-muted);font-weight:600;}
+.foot-val{font-size:18px;font-weight:800;}
+.foot-val.ok{color:var(--primary);}
+.foot-val.over{color:var(--danger);}
+.btn-row{display:flex;gap:8px;}
+.btn{border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-outline{background:#fff;border:1.5px solid var(--border);color:var(--text);}
+
+/* ─── モーダル ─── */
+.m-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);
+  z-index:50;display:none;align-items:flex-end;justify-content:center;}
+.m-sheet{background:#fff;width:100%;max-width:600px;max-height:88vh;
+  border-radius:20px 20px 0 0;padding:20px 16px 30px;
+  overflow-y:auto;box-shadow:0 -4px 20px rgba(0,0,0,.15);
+  animation:slideUp .25s ease-out;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.m-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.m-title{font-size:16px;font-weight:700;}
+.m-close{font-size:20px;border:none;background:transparent;cursor:pointer;color:var(--text-muted);}
+
+/* ─── 修得済み科目モーダル（読み取り専用）─── */
+.comp-readonly{display:flex;align-items:center;gap:8px;padding:7px 10px;
+  border-bottom:1px solid #f8fafc;}
+.comp-readonly:last-child{border-bottom:none;}
+.comp-readonly.certified{background:#f0fdf4;}
+.comp-readonly.uncertified{background:#fef2f2;}
+.cr-icon{width:18px;height:18px;border-radius:4px;flex:0 0 18px;
+  display:flex;align-items:center;justify-content:center;font-size:11px;}
+.cr-name{flex:1;font-size:13px;font-weight:600;}
+.cr-name.struck{text-decoration:line-through;color:var(--text-muted);}
+.cr-unit{font-size:10px;color:var(--text-muted);background:#f1f5f9;
+  padding:1px 5px;border-radius:4px;}
+/* 修得済み科目（手動入力版）チェックボックス行 */
+.comp-edit{display:flex;align-items:center;gap:8px;padding:7px 10px;
+  border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .1s;}
+.comp-edit:last-child{border-bottom:none;}
+.comp-edit.done{background:#f0fdf4;}
+.comp-edit input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);flex:0 0 16px;}
+.comp-edit .ce-name{flex:1;font-size:13px;font-weight:600;}
+
+/* ─── 診断チェックアイテム ─── */
+.chk-item{font-size:12px;font-weight:600;padding:6px 10px;border-radius:8px;
+  margin-bottom:4px;display:flex;justify-content:space-between;}
+.chk-item.ok{background:var(--success-bg);color:#065f46;border:1px solid #86efac;}
+.chk-item.ng{background:var(--danger-bg);color:#991b1b;border:1px solid #fca5a5;}
+
+/* ─── カテゴリブロック ─── */
+.cat-block{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:6px;}
+.cat-title{background:#f1f5f9;padding:5px 10px;font-size:11px;font-weight:700;color:#475569;}
+
+/* ─── トースト ─── */
+.toast{position:fixed;top:62px;left:50%;transform:translateX(-50%);
+  background:#1e293b;color:#fff;font-size:13px;font-weight:600;
+  padding:9px 18px;border-radius:999px;z-index:60;display:none;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);text-align:center;max-width:90%;}
+</style>
+</head>
+<body>
+<!-- ヘッダー -->
+<div class="hdr">
+  <div class="hdr-title">📋 受講登録ナビ <span style="font-size:11px;opacity:.75;">2026年度 次年度登録</span></div>
+  <div class="hdr-right" style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+    <span class="grade-badge" id="gradeBadge">─年次</span>
+    <span class="grade-badge" id="nextGradeBadge" style="font-size:10px;opacity:0.85;">来年度:─</span>
+  </div>
+</div>
+
+<!-- ウィザードステップバー -->
+<div class="steps">
+  <button class="step-btn active" id="stepBtn1" onclick="goStep(1)">
+    <span class="snum" id="snum1">1</span>基本情報
+  </button>
+  <button class="step-btn" id="stepBtn2" onclick="goStep(2)">
+    <span class="snum" id="snum2">2</span>受講科目を選ぶ
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ─── STEP 1: 基本情報 ─── -->
+<div class="wrap" id="step1">
+
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:12px;">
+      👤 あなたの情報を確認してください
+    </div>
+
+    <!-- 生徒番号 -->
+    <div class="form-group">
+      <label>生徒番号</label>
+      <div style="display:flex;gap:8px;">
+        <input class="inp" id="sNo" type="text"
+          placeholder="例: 2A001" oninput="onNoInput()">
+        <button class="btn btn-outline"
+          style="padding:8px 12px;font-size:12px;white-space:nowrap;"
+          onclick="loadFromAdmin()">📥 読込</button>
+      </div>
+      <div class="load-ok" id="loadOk"></div>
+    </div>
+
+    <!-- 氏名 -->
+    <div class="form-row">
+      <div class="form-group" style="margin-bottom:0;">
+        <label>氏名</label>
+        <input class="inp" id="sName" type="text" placeholder="山田 太郎">
+      </div>
+      <!-- クラス -->
+      <div class="form-group" id="clsGroup" style="margin-bottom:0;display:none;">
+        <label>クラス（1年次）</label>
+        <select class="sel" id="clsSel" onchange="rerender()">
+          <option value="">未選択</option>
+          <option value="A">A組</option><option value="B">B組</option>
+          <option value="C">C組</option><option value="D">D組</option>
+          <option value="E">E組</option><option value="F">F組</option>
+          <option value="G">G組</option><option value="H">H組</option>
+          <option value="I">I組</option><option value="J">J組</option>
+
+        </select>
+      </div>
+    </div>
+
+    <!-- 修得単位数（年次判定） -->
+    <!-- 手動モード: セレクト表示 -->
+    <div class="form-group" id="creditsManualSection">
+      <label>現在の修得単位数（体育除く）<span id="gradeDesc"
+        style="font-size:11px;color:var(--text-muted);margin-left:6px;"></span></label>
+      <select class="sel" id="credits" onchange="onCreditsChange()"></select>
+    </div>
+    <!-- adminデータ読込モード: 読み取り専用表示 -->
+    <div id="creditsAdminSection" style="display:none;">
+      <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:10px;padding:10px 14px;font-size:13px;color:#1d4ed8;margin-bottom:6px;">
+        <div style="font-weight:700;margin-bottom:4px;" id="adminGradeClsLabel">─</div>
+        <div style="font-size:12px;" id="adminCreditsLabel">修得単位数: ─ 単位</div>
+      </div>
+    </div>
+
+    <!-- 体育単位（手動モードのみ表示） -->
+    <div id="peSection">
+      <div class="pe-bar">
+        <div class="pe-bar-row">
+          <span class="pe-label">体育 修得済み単位数</span>
+          <select class="pe-sel" id="peCreds" onchange="onPeChange()">
+            <option value="0">0</option><option value="1">1</option>
+            <option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option>
+            <option value="6">6</option><option value="7">7</option>
+            <option value="8">8</option><option value="9">9</option>
+          </select>
+          <span class="pe-badge pe-ng" id="peBadge">0単位 / 必修7単位</span>
+        </div>
+        <div class="pe-track">
+          <div class="pe-fill" id="peFill"
+            style="width:0%;background:var(--danger);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 修得済み科目サマリー -->
+    <div style="margin-top:10px;">
+      <label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">修得済み科目</label>
+      <div class="completed-summary" onclick="openCompletedModal()">
+        <div class="cs-left">
+          <span class="cs-label" id="compLabel">科目数</span>
+          <span class="cs-value" id="compValue">─ 科目</span>
+        </div>
+        <span class="cs-arrow">›</span>
+      </div>
+      <div id="adminNote" style="display:none;font-size:11px;color:var(--text-muted);margin-top:4px;padding:0 4px;">
+        🔒 管理データから読み込まれています。変更は管理サイトから行ってください。
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1 → STEP 2 へ進むボタン -->
+  <button class="btn btn-primary" style="width:100%;font-size:15px;padding:14px;"
+    onclick="goStep(2)">
+    次へ：受講科目を選ぶ →
+  </button>
+
+</div><!-- /step1 -->
+
+<!-- ─── STEP 2: 受講科目を選ぶ ─── -->
+<div class="wrap" id="step2" style="display:none;">
+
+  <!-- 必修条件リアルタイムバナー -->
+  <div class="req-mini" id="reqMini"></div>
+
+  <div class="card" style="padding:12px 14px;">
+    <div style="font-size:14px;font-weight:700;margin-bottom:10px;">
+      📚 来年度に受講する科目を選んでください
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);background:#f0fdf4;
+      border:1px solid #86efac;border-radius:8px;padding:7px 12px;margin-bottom:12px;">
+      📌 あなたの修得状況をもとに、受講可能な科目のみ表示されます。
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabX" onclick="switchXY('X')">X 面接指導日</button>
+      <button class="tab-btn" id="tabY" onclick="switchXY('Y')">Y 面接指導日</button>
+    </div>
+    <div class="period-scroll" id="periodScroll"></div>
+    <div class="slot-banner" id="slotBanner">
+      <span id="slotTime">9:00〜9:50</span>
+      <span id="slotName">X面接 1限</span>
+    </div>
+    <div class="filter-bar">
+      <span class="filter-label">表示設定</span>
+      <button class="filter-btn" id="filterBtn" onclick="toggleFilter()">受講可能のみ表示中</button>
+    </div>
+    <div id="slotList"></div>
+  </div>
+
+</div><!-- /step2 -->
+
+<!-- フッターバー -->
+<div class="foot">
+  <div class="foot-left" onclick="openModal('diagModal')">
+    <span class="foot-lbl">次年度 登録予定単位（上限30）</span>
+    <span class="foot-val ok" id="footVal">0 単位</span>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline" onclick="openModal('ttModal')">時間割</button>
+    <button class="btn btn-primary" onclick="openModal('diagModal')">診断・提出</button>
+  </div>
+</div>
+
+<!-- ─── 修得済み科目モーダル ─── -->
+<div class="m-overlay" id="compModal" onclick="if(event.target.id==='compModal')closeModal('compModal')">
+  <div class="m-sheet">
+    <div class="m-hdr">
+      <div class="m-title" id="compModalTitle">修得済み科目の確認</div>
+      <button class="m-close" onclick="closeModal('compModal')">✕</button>
+    </div>
+    <!-- 体育欄（手動モードのみ表示） -->
+    <div id="compPeSection" style="display:none;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;">体育</div>
+      <div class="pe-bar" style="margin-bottom:14px;">
+        <div class="pe-bar-row">
+          <span class="pe-label">体育 修得済み単位数</span>
+          <select class="pe-sel" id="peCreds2" onchange="syncPe()">
+            <option value="0">0</option><option value="1">1</option>
+            <option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option>
+            <option value="6">6</option><option value="7">7</option>
+            <option value="8">8</option><option value="9">9</option>
+          </select>
+          <span class="pe-badge pe-ng" id="peBadge2">0単位</span>
+        </div>
+        <div class="pe-track">
+          <div class="pe-fill" id="peFill2" style="width:0%;background:var(--danger);"></div>
+        </div>
+        <div style="font-size:11px;color:#92400e;margin-top:4px;">
+          ※ 複数年度の累積単位数を入力してください（上限9単位）
+        </div>
+      </div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;">体育以外の科目</div>
+    </div>
+    <div id="compList"></div>
+    <!-- 管理データから読み込んだ場合の注記 -->
+    <div id="compAdminNote" style="display:none;
+      background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;
+      padding:10px 14px;font-size:12px;color:#1d4ed8;margin-top:14px;">
+      🔒 <b>この情報は管理サイトから読み込まれています。</b><br>
+      修正が必要な場合は担任に連絡し、admin.html側で修正を行ってください。
+    </div>
+  </div>
+</div>
+
+<!-- ─── 診断モーダル ─── -->
+<div class="m-overlay" id="diagModal" onclick="if(event.target.id==='diagModal')closeModal('diagModal')">
+  <div class="m-sheet">
+    <div class="m-hdr">
+      <div class="m-title">卒業必修条件の達成診断</div>
+      <button class="m-close" onclick="closeModal('diagModal')">✕</button>
+    </div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px;">次年度 選択中の科目</div>
+    <div id="diagSelected" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;"></div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px;">必修条件チェック（今年度まで ＋ 次年度登録）</div>
+    <div id="diagChecks" style="margin-bottom:16px;"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-outline" style="flex:1;" onclick="saveLocal()">💾 端末に保存</button>
+      <button class="btn btn-outline" style="flex:1;" onclick="window.print()">🖨 印刷</button>
+      <button class="btn btn-success" style="width:100%;margin-top:4px;" onclick="submitReg()">
+        📋 担任に提出する
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── 時間割モーダル ─── -->
+<div class="m-overlay" id="ttModal" onclick="if(event.target.id==='ttModal')closeModal('ttModal')">
+  <div class="m-sheet">
+    <div class="m-hdr">
+      <div class="m-title">時間割プレビュー</div>
+      <button class="m-close" onclick="closeModal('ttModal')">✕</button>
+    </div>
+    <div id="ttContent"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ──────────────────────────────────────────────
+// adminDB ヘルパー
+// ──────────────────────────────────────────────
+function getAdminDB(){try{return JSON.parse(localStorage.getItem("admin_db_2026")||"{}");}catch(e){return{};}}
+function getAdminSubjects(){
+  const db=getAdminDB();
+  return db.subjects?.length?db.subjects:FALLBACK_SUBJECTS;
+}
+function getAdminSubjectsByCategory(){
+  const map={};
+  getAdminSubjects().forEach(s=>{const c=s.教科||"その他";(map[c]||(map[c]=[])).push(s);});
+  return map;
+}
+function getAdminUnits(){
+  const map={...FALLBACK_UNITS};
+  getAdminSubjects().forEach(s=>{map[s.科目名]=s.単位数;});
+  return map;
+}
+// 科目名 → 略称 のマップを返す（略称がなければ科目名をそのまま使用）
+function getAbbrMap(){
+  const map={};
+  getAdminSubjects().forEach(s=>{map[s.科目名]=s.略称||s.科目名;});
+  return map;
+}
+// 科目名から略称を返すユーティリティ
+function subjectAbbr(name){
+  return (STATE.abbrMap||(STATE.abbrMap=getAbbrMap()))[name]||name;
+}
+function getAdminPrereqs(){
+  const db=getAdminDB();return db.requirements?.段階学習||FALLBACK_PREREQS;
+}
+function getAdminRequirements(){
+  const db=getAdminDB();return db.requirements?.必修科目||null;
+}
+// admin の年次判定設定を読み込む（未設定時はデフォルト値）
+function getAdminGradeSettings(){
+  const db=getAdminDB();
+  return db.gradeSettings||{
+    thresholds:[
+      {grade:1,minCredits:0,maxCredits:13},
+      {grade:2,minCredits:14,maxCredits:43},
+      {grade:3,minCredits:44,maxCredits:999}
+    ],
+    graduation:{minTotalCredits:74,minPECredits:7,requireAllMandatory:true}
+  };
+}
+// 修得単位数 c から学年を返す（admin設定を参照）
+function calcGradeFromCredits(c){
+  const thresholds=[...getAdminGradeSettings().thresholds].sort((a,b)=>a.minCredits-b.minCredits);
+  let g=thresholds[0].grade;
+  for(const t of thresholds){if(c>=t.minCredits)g=t.grade;}
+  return g;
+}
+// ──────────────────────────────────────────────
+// 試験スケジュール競合チェック
+// 試験はXYそれぞれ6科目以内 + 同一XY・同一時限への重複を禁止
+// ──────────────────────────────────────────────
+function getExamSchedules(){return getAdminDB().examSchedules||[];}
+// 科目名から試験スロット(XY+period)を返す
+function getSubjectExamSlots(subjectName){
+  return getExamSchedules().filter(e=>e.科目名===subjectName);
+}
+// 追加しようとしている科目が選択済み科目と試験時間が重複しないか検査
+function checkExamConflict(subjectName,selectedKeys){
+  const examSched=getExamSchedules();
+  const newSlots=examSched.filter(e=>e.科目名===subjectName);
+  const conflicts=[];
+  for(const ns of newSlots){
+    for(const selKey of selectedKeys){
+      const selSlots=examSched.filter(e=>e.科目名===selKey);
+      for(const ss of selSlots){
+        if(ss.XY===ns.XY&&ss.period===ns.period){
+          conflicts.push({xy:ns.XY,period:ns.period,with:selKey});
+        }
+      }
+    }
+  }
+  return conflicts;
+}
+// 選択済み科目のXY別試験科目数を返す（体育・試験なし科目は除外）
+function countExamsByXY(selectedKeys){
+  const examSched=getExamSchedules();
+  const x=new Set(),y=new Set();
+  for(const k of selectedKeys){
+    examSched.filter(e=>e.科目名===k).forEach(e=>{
+      if(e.XY==="X")x.add(k);else y.add(k);
+    });
+  }
+  return{x:x.size,y:y.size};
+}
+function generateLessonSchedule(){
+  const db=getAdminDB();
+  if(!db.schedules?.length)return FALLBACK_SCHEDULE;
+  const result={X:[],Y:[]};
+  const TIMES=["9:00〜9:50","10:00〜10:50","11:00〜11:50","12:40〜13:30","13:40〜14:30","14:40〜15:30"];
+  ["X","Y"].forEach(xy=>{
+    [1,2,3,4,5,6].forEach(p=>{
+      const slots=db.schedules.filter(s=>s.XY===xy&&s.period===p);
+      const options=slots.map(s=>{
+        const subj=(db.subjects||[]).find(x=>x.科目名===s.科目名);
+        const opt={label:s.label,parity:s.parity||null,eligibility:buildElig(s),examSubject:s.科目名};
+        if(subj?.syncXY)opt.syncAcrossXY=true;
+        if(subj?.syncConsec)opt.syncConsecutive=true;
+        return opt;
+      });
+      result[xy].push({period:p,time:TIMES[p-1],options});
+    });
+  });
+  return result;
+}
+function buildElig(s){
+  const e=[];if(!s.条件区分||s.条件区分==="all")return e;
+  if(s.条件区分==="mingrade")return[{type:"mingrade",grade:s.minGrade}];
+  if(s.条件区分==="exactgrade")return[{type:"exactgrade",grade:s.minGrade}];
+  if(s.条件区分==="grade1classes")return[{type:"grade1classes",grade:1,classes:s.classes||[]}];
+  if(s.条件区分==="grade1classes+min2")return[{type:"grade1classes",grade:1,classes:s.classes||[]},{type:"mingrade",grade:2}];
+  if(s.条件区分==="grade1classes+exactgrade2")return[{type:"grade1classes",grade:1,classes:s.classes||[]},{type:"exactgrade",grade:2}];
+  return e;
+}
+
+// ──────────────────────────────────────────────
+// フォールバック定数
+// ──────────────────────────────────────────────
+const FALLBACK_UNITS={
+  "現代の国語":2,"言語文化":2,"論理国語":4,"文学国語":4,"国語表現":4,"古典探究":4,
+  "地理総合":2,"歴史総合":2,"日本史探究":4,"世界史探究":4,
+  "公共":2,"倫理":2,"政治・経済":2,
+  "数学Ⅰ":3,"数学Ⅱ":4,"数学Ａ":2,"数学Ｂ":2,"数学入門講座":3,
+  "物理基礎":2,"化学基礎":2,"生物基礎":2,"地学基礎":2,"科学と人間生活":2,
+  "体育":3,"保健":2,
+  "音楽Ⅰ":2,"美術Ⅰ":2,"工芸Ⅰ":2,"書道Ⅰ":2,
+  "英語コミュニケーションⅠ":3,"英語コミュニケーションⅡ":4,"論理・表現Ⅰ":3,"英語入門講座":3,
+  "家庭基礎":2,"家庭総合":4,"消費生活":3,"保育基礎":3,"フードデザイン":4,
+  "情報Ⅰ":2,"ビジネス基礎":3,"ビジネス・コミュニケーション":3,"ビジネス法規":3,"簿記":4,
+  "総合的な探究の時間":3
+};
+const FALLBACK_SUBJECTS=[
+  {id:"s01",教科:"国語",科目名:"現代の国語",略称:"現国",単位数:2},
+  {id:"s02",教科:"国語",科目名:"言語文化",略称:"言文",単位数:2},
+  {id:"s03",教科:"国語",科目名:"論理国語",略称:"論理国語",単位数:4},
+  {id:"s04",教科:"国語",科目名:"文学国語",略称:"文学国語",単位数:4},
+  {id:"s05",教科:"国語",科目名:"国語表現",略称:"国語表現",単位数:4},
+  {id:"s06",教科:"国語",科目名:"古典探究",略称:"古典探究",単位数:4},
+  {id:"s07",教科:"地理歴史",科目名:"地理総合",略称:"地総",単位数:2},
+  {id:"s08",教科:"地理歴史",科目名:"歴史総合",略称:"歴総",単位数:2},
+  {id:"s09",教科:"地理歴史",科目名:"日本史探究",略称:"日本史探究",単位数:4},
+  {id:"s10",教科:"地理歴史",科目名:"世界史探究",略称:"世界史探究",単位数:4},
+  {id:"s11",教科:"公民",科目名:"公共",略称:"公共",単位数:2},
+  {id:"s12",教科:"公民",科目名:"倫理",略称:"倫理",単位数:2},
+  {id:"s13",教科:"公民",科目名:"政治・経済",略称:"政経",単位数:2},
+  {id:"s14",教科:"数学",科目名:"数学Ⅰ",略称:"数学Ⅰ",単位数:3},
+  {id:"s15",教科:"数学",科目名:"数学Ⅱ",略称:"数学Ⅱ",単位数:4},
+  {id:"s16",教科:"数学",科目名:"数学Ａ",略称:"数学A",単位数:2},
+  {id:"s17",教科:"数学",科目名:"数学Ｂ",略称:"数学B",単位数:2},
+  {id:"s18",教科:"数学",科目名:"数学入門講座",略称:"数学入門",単位数:3},
+  {id:"s19",教科:"理科",科目名:"物理基礎",略称:"物理基礎",単位数:2},
+  {id:"s20",教科:"理科",科目名:"化学基礎",略称:"化学基礎",単位数:2},
+  {id:"s21",教科:"理科",科目名:"生物基礎",略称:"生物基礎",単位数:2},
+  {id:"s22",教科:"理科",科目名:"地学基礎",略称:"地学基礎",単位数:2},
+  {id:"s23",教科:"保健体育",科目名:"体育",略称:"体育",単位数:3,syncXY:true},
+  {id:"s24",教科:"保健体育",科目名:"保健",略称:"保健",単位数:2},
+  {id:"s25",教科:"芸術",科目名:"音楽Ⅰ",略称:"音楽Ⅰ",単位数:2},
+  {id:"s26",教科:"芸術",科目名:"美術Ⅰ",略称:"美術Ⅰ",単位数:2},
+  {id:"s27",教科:"芸術",科目名:"工芸Ⅰ",略称:"工芸Ⅰ",単位数:2},
+  {id:"s_b",教科:"芸術",科目名:"書道Ⅰ",略称:"書道Ⅰ",単位数:2},
+  {id:"s28",教科:"外国語",科目名:"英語コミュニケーションⅠ",略称:"英語コミⅠ",単位数:3,syncXY:true},
+  {id:"s29",教科:"外国語",科目名:"英語コミュニケーションⅡ",略称:"英語コミⅡ",単位数:4,syncXY:true},
+  {id:"s30",教科:"外国語",科目名:"論理・表現Ⅰ",略称:"論理表現Ⅰ",単位数:3,syncXY:true},
+  {id:"s31",教科:"外国語",科目名:"英語入門講座",略称:"英語入門",単位数:3,syncXY:true},
+  {id:"s_hk",教科:"家庭",科目名:"家庭基礎",略称:"家庭基礎",単位数:2},
+  {id:"s32",教科:"家庭",科目名:"家庭総合",略称:"家庭総合",単位数:4,syncXY:true},
+  {id:"s33",教科:"家庭",科目名:"消費生活",略称:"消費生活",単位数:3},
+  {id:"s34",教科:"家庭",科目名:"保育基礎",略称:"保育基礎",単位数:3},
+  {id:"s35",教科:"家庭",科目名:"フードデザイン",略称:"フードデザイン",単位数:4,syncConsec:true},
+  {id:"s36",教科:"情報",科目名:"情報Ⅰ",略称:"情報Ⅰ",単位数:2},
+  {id:"s37",教科:"商業",科目名:"ビジネス基礎",略称:"ビジ基礎",単位数:3},
+  {id:"s38",教科:"商業",科目名:"ビジネス・コミュニケーション",略称:"ビジコミ",単位数:3},
+  {id:"s39",教科:"商業",科目名:"ビジネス法規",略称:"ビジ法規",単位数:3},
+  {id:"s40",教科:"商業",科目名:"簿記",略称:"簿記",単位数:4,syncXY:true},
+  {id:"s41",教科:"総合",科目名:"総合的な探究の時間",略称:"総合探究",単位数:3},
+];
+const FALLBACK_PREREQS=[
+  {前提:["現代の国語","言語文化"],解禁:["論理国語","文学国語","国語表現","古典探究"]},
+  {前提:["歴史総合"],解禁:["日本史探究","世界史探究"]},
+  {前提:["公共"],解禁:["倫理","政治・経済"]},
+  {前提:["数学Ⅰ"],解禁:["数学Ⅱ","数学Ｂ"]},
+  // 数学Ａ・論理表現Ⅰは同時受講OK（修得済みでなくても受講登録中であれば可）
+  {前提:["数学Ⅰ"],解禁:["数学Ａ"],allowConcurrent:true},
+  {前提:["英語コミュニケーションⅠ"],解禁:["英語コミュニケーションⅡ"]},
+  {前提:["英語コミュニケーションⅠ"],解禁:["論理・表現Ⅰ"],allowConcurrent:true},
+  // 家庭科は家庭基礎 OR 家庭総合のいずれか1科目修得で解禁（anyOf）
+  {type:"anyOf",min:1,前提:["家庭総合","家庭基礎"],解禁:["消費生活","保育基礎","フードデザイン"]},
+];
+const FALLBACK_SCHEDULE={X:[
+  {period:1,time:"9:00〜9:50",options:[]},{period:2,time:"10:00〜10:50",options:[]},
+  {period:3,time:"11:00〜11:50",options:[]},{period:4,time:"12:40〜13:30",options:[]},
+  {period:5,time:"13:40〜14:30",options:[]},{period:6,time:"14:40〜15:30",options:[]}
+],Y:[
+  {period:1,time:"9:00〜9:50",options:[]},{period:2,time:"10:00〜10:50",options:[]},
+  {period:3,time:"11:00〜11:50",options:[]},{period:4,time:"12:40〜13:30",options:[]},
+  {period:5,time:"13:40〜14:30",options:[]},{period:6,time:"14:40〜15:30",options:[]}
+]};
+
+// ──────────────────────────────────────────────
+// 状態管理
+// ──────────────────────────────────────────────
+let STATE={
+  xy:"X", period:1, showAll:false,
+  manual:{X:{},Y:{}},
+  computed:{X:{},Y:{}},
+  completed:new Set(),   // 認定済み修得科目（体育以外）
+  adminDataLoaded:false, // adminから読み込んだかどうか
+  adminStudentData:null, // adminから読み込んだ生徒データ（読み取り専用表示用）
+  abbrMap:null,         // 科目名→略称マップ（init時に生成）
+  schedule:null,
+  units:null,
+};
+const $=id=>document.getElementById(id);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const normE=s=>String(s||"").replace(/[・\s]/g,"");
+
+function toast(msg){const t=$("toast");t.textContent=msg;t.style.display="block";
+  setTimeout(()=>t.style.display="none",2500);}
+
+// ──────────────────────────────────────────────
+// ウィザード切り替え
+// ──────────────────────────────────────────────
+function goStep(n){
+  $("step1").style.display=n===1?"block":"none";
+  $("step2").style.display=n===2?"block":"none";
+  ["stepBtn1","stepBtn2"].forEach((id,i)=>{
+    $(id).classList.toggle("active",i+1===n);
+  });
+  // STEP1完了チェック
+  if(n===2&&!$("sName").value.trim()){
+    $("step1").style.display="block";
+    $("step2").style.display="none";
+    $("stepBtn1").classList.add("active");
+    $("stepBtn2").classList.remove("active");
+    toast("⚠️ 氏名を入力してください");
+    return;
+  }
+  if(n===2) renderSlotList();
+}
+
+// ──────────────────────────────────────────────
+// adminDB から生徒データを自動ロード
+// ──────────────────────────────────────────────
+let _noTimer=null;
+function onNoInput(){
+  clearTimeout(_noTimer);
+  const no=$("sNo").value.trim();
+  if(no.length>=3) _noTimer=setTimeout(()=>{if($("sNo").value.trim()===no)tryAutoLoad(no);},700);
+}
+function tryAutoLoad(no){
+  const db=getAdminDB();
+  if(!db.students?.length)return;
+  const s=db.students.find(x=>x.生徒番号===no);
+  if(!s)return;
+  applyStudent(s);
+  showLoadOk(`✅ 管理データを自動読込：${s.氏名}（${s.学年}年次 ${s.クラス?s.クラス+"組":""}）`);
+}
+function loadFromAdmin(){
+  const no=$("sNo").value.trim();
+  if(!no){toast("⚠️ 生徒番号を入力してください");return;}
+  const db=getAdminDB();
+  if(!db.students?.length){toast("ℹ️ 管理データが見つかりません（admin.htmlと同じブラウザで開いてください）");return;}
+  const s=db.students.find(x=>x.生徒番号===no);
+  if(!s){toast(`⚠️ 生徒番号 ${no} の生徒が見つかりません`);return;}
+  applyStudent(s);
+  showLoadOk(`✅ 読込完了：${s.氏名}（${s.学年}年次 ${s.クラス?s.クラス+"組":""}）`);
+}
+function applyStudent(s){
+  $("sName").value=s.氏名||"";
+  // 認定済み科目（体育以外）
+  const certs=(s.修得済み科目||[]).filter(x=>x.認定!==false&&x.科目名!=="体育");
+  STATE.completed=new Set(certs.map(x=>x.科目名));
+  // 修得単位数（体育除く）
+  const totalU=certs.reduce((sum,x)=>{
+    const u=x.単位数||(STATE.units?.[x.科目名]||2);return sum+u;},0);
+  $("credits").value=Math.min(totalU,100);
+  // 体育単位数
+  const peTotal=(s.修得済み科目||[]).filter(x=>x.認定!==false&&x.科目名==="体育")
+    .reduce((sum,x)=>sum+Number(x.単位数||3),0);
+  $("peCreds").value=Math.min(peTotal,9);
+  $("peCreds2").value=Math.min(peTotal,9);
+  // クラス
+  if(s.クラス)$("clsSel").value=s.クラス;
+  // adminDataLoaded フラグ → チェックリストを読み取り専用に
+  STATE.adminDataLoaded=true;
+  STATE.adminStudentData=s;
+  // 体育セクションを非表示（adminから読んだので管理側に委ねる）
+  $("peSection").style.display="none";
+  $("adminNote").style.display="block";
+  // 修得単位数を読み取り専用表示に切り替え
+  $("creditsManualSection").style.display="none";
+  $("creditsAdminSection").style.display="block";
+  $("clsGroup").style.display="none"; // クラスはadminから取得済みのため非表示
+  // 今年度の学年・クラス情報を表示
+  const grade=s.学年||1;
+  const cls=s.クラス||"";
+  const el=$("adminGradeClsLabel");
+  if(el) el.textContent=`📋 今年度: ${grade}年次${cls?cls+"組":""} ／ 修得済み単位: ${totalU}単位（体育除く）・体育${Math.min(peTotal,9)}単位`;
+  onPeChange();
+  updateCompletedSummary();
+  rerender();
+  updateGradeBadges();
+  // ★ データ変更による受講登録問題を警告表示
+  if(s.受講登録?.dataChangeIssues?.length > 0) {
+    let banner = document.getElementById("dataChangeBanner");
+    if(!banner) {
+      banner = document.createElement("div");
+      banner.id = "dataChangeBanner";
+      const step1 = document.getElementById("step1");
+      if(step1) step1.insertBefore(banner, step1.firstChild);
+    }
+    const issues = s.受講登録.dataChangeIssues;
+    banner.style.cssText = "background:#fef2f2;border:2px solid #ef4444;border-radius:12px;padding:12px 14px;font-size:12px;color:#991b1b;margin-bottom:12px;";
+    banner.innerHTML = `<div style="font-size:13px;font-weight:700;margin-bottom:6px;">🔴 前回の受講登録に問題が発生しています</div>
+      担任による修得科目データの変更により、以下の登録科目が無効になっています：<br>
+      <div style="margin:6px 0 8px 8px;">${issues.map(i=>`• <b>${i.科目名}</b>：${i.理由}`).join("<br>")}</div>
+      <b>受講科目を選び直して、再提出してください。</b>`;
+  } else {
+    const banner = document.getElementById("dataChangeBanner");
+    if(banner) banner.remove();
+  }
+}
+function showLoadOk(msg){
+  const el=$("loadOk");el.textContent=msg;el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),5000);
+}
+
+// ──────────────────────────────────────────────
+// 体育単位数・年次
+// ──────────────────────────────────────────────
+function onPeChange(){
+  const pe=Number($("peCreds").value||0);
+  // ２つのセレクトを同期
+  const p2=$("peCreds2");if(p2)p2.value=pe;
+  updatePeBadge(pe);
+  updateCompletedSummary();
+  rerender();
+}
+function syncPe(){
+  const pe=Number($("peCreds2").value||0);
+  $("peCreds").value=pe;
+  onPeChange();
+}
+function updatePeBadge(pe){
+  const pct=Math.min(pe/7*100,100);
+  const color=pe>=7?"var(--success)":pe>=5?"var(--warning)":"var(--danger)";
+  const text=pe>=7?`${pe}単位 ✅`:pe>=5?`${pe}単位 ⚠️ あと${7-pe}単位`:`${pe}単位 / 必修7単位`;
+  ["peBadge","peBadge2"].forEach(id=>{
+    const el=$(id);if(!el)return;
+    el.textContent=text;
+    el.className="pe-badge "+(pe>=7?"pe-ok":pe>=5?"pe-warn":"pe-ng");
+  });
+  ["peFill","peFill2"].forEach(id=>{
+    const el=$(id);if(!el)return;
+    el.style.width=`${pct}%`;el.style.background=color;
+  });
+}
+
+function onCreditsChange(doRerender=true){
+  if(STATE.adminDataLoaded) return; // admin読込済みなら手動変更を無視
+  const c=Number($("credits").value||0);
+  const g=calcGradeFromCredits(c);
+  $("clsGroup").style.display=g===1?"block":"none";
+  const el=$("gradeDesc");
+  if(el) el.textContent=`（現在の修得単位数から来年度学年を自動判定します）`;
+  if(doRerender) rerender();
+  else updateGradeBadges();
+}
+// 今年度学年: admin読込済みならadminの学年を、未読込なら修得単位数から計算
+function getGrade(){
+  if(STATE.adminDataLoaded && STATE.adminStudentData?.学年)
+    return Number(STATE.adminStudentData.学年);
+  return calcGradeFromCredits(Number($("credits").value||0));
+}
+function getCls(){return $("clsSel").value;}
+// ──────────────────────────────────────────────
+// 来年度学年を計算
+// ★修正: 学年の区分は「今年度までの修得単位数（c）」のみで決まる
+//        ただし最上位学年(卒業)の判定には受講登録後の合計単位数・卒業条件を使う
+// ──────────────────────────────────────────────
+function getNextGrade(){
+  const c=Number($("credits").value||0);
+  const gs=getAdminGradeSettings();
+  const thresholds=[...gs.thresholds].sort((a,b)=>a.minCredits-b.minCredits);
+  const grd=gs.graduation;
+  const maxGrade=Math.max(...thresholds.map(t=>t.grade));
+  // 来年度学年 = 今年度修得単位数（c）だけで区分を決定
+  let nextGrade=thresholds[0].grade;
+  for(const t of thresholds){if(c>=t.minCredits)nextGrade=t.grade;}
+  if(nextGrade<maxGrade){
+    const label=thresholds.find(t=>t.grade===nextGrade)?.label||`${nextGrade}年次`;
+    return{grade:nextGrade,label,canGraduate:false,warn:null};
+  }
+  // 最上位学年の場合: 卒業条件チェック（総単位数は今年度修得+受講登録で計算）
+  const UNITS=STATE.units||FALLBACK_UNITS;
+  const keys=getSelectedKeys();
+  let registered=0;keys.forEach(k=>{registered+=UNITS[k]||0;});
+  const total=c+registered;
+  const pe=Number($("peCreds").value||0);
+  const peTotal=pe+(keys.has("体育")?(UNITS["体育"]||3):0);
+  const allSet=new Set([...STATE.completed,...keys]);
+  const checks=buildChecks(allSet,peTotal);
+  const allOk=!grd.requireAllMandatory||checks.every(ch=>ch.ok);
+  const warns=[];
+  if(total<grd.minTotalCredits)warns.push(`登録後合計${total}/${grd.minTotalCredits}単位`);
+  if(peTotal<grd.minPECredits)warns.push(`体育${peTotal}/${grd.minPECredits}単位`);
+  if(grd.requireAllMandatory&&!allOk)warns.push("必修未達");
+  if(!warns.length)return{grade:maxGrade,label:`${maxGrade}年次（卒業）`,canGraduate:true,warn:null};
+  const prev=maxGrade>1?maxGrade-1:maxGrade;
+  return{grade:prev,label:`${prev}年次（要件不達）`,canGraduate:false,warn:warns.join("・")};
+}
+function updateGradeBadges(){
+  const g=getGrade();
+  let currentLabel;
+  if(STATE.adminDataLoaded && STATE.adminStudentData){
+    // admin読込済み: 実際の学年・クラスを表示
+    const s=STATE.adminStudentData;
+    const grade=s.学年||g;
+    const cls=s.クラス||"";
+    currentLabel=cls?`今年度:${grade}年${cls}組`:`今年度:${grade}年次`;
+  }else{
+    const cls=getCls();
+    currentLabel=cls?`今年度:${g}年${cls}組`:`今年度:${g}年次`;
+  }
+  $("gradeBadge").textContent=currentLabel;
+  const ng=getNextGrade();
+  const ngEl=$("nextGradeBadge");
+  if(ngEl){
+    ngEl.textContent=`来年度:${ng.label}`;
+    ngEl.style.color=ng.warn?"#fbbf24":"rgba(255,255,255,0.9)";
+    ngEl.title=ng.warn||"";
+  }
+}
+
+// ──────────────────────────────────────────────
+// 修得済み科目サマリー更新
+// ──────────────────────────────────────────────
+function updateCompletedSummary(){
+  const pe=Number($("peCreds").value||0);
+  const count=STATE.completed.size;
+  const UNITS=STATE.units||FALLBACK_UNITS;
+  const totalU=[...STATE.completed].reduce((s,k)=>s+(UNITS[k]||2),0);
+  $("compValue").textContent=`${count}科目 / 体育${pe}単位`;
+  $("compLabel").textContent=`修得済み科目 (体育以外の単位: ${totalU}単位)`;
+  // stepBtn1をdone表示
+  if(STATE.adminDataLoaded||STATE.completed.size>0){
+    $("snum1").textContent="✓";
+    $("stepBtn1").classList.add("done");
+  }
+}
+
+// ──────────────────────────────────────────────
+// 修得済み科目モーダル
+// ──────────────────────────────────────────────
+function openCompletedModal(){
+  // タイトル
+  $("compModalTitle").textContent=STATE.adminDataLoaded?
+    "📋 修得済み科目（管理データから読込）":
+    "✏️ 修得済み科目を入力";
+  // 管理データ注記
+  $("compAdminNote").style.display=STATE.adminDataLoaded?"block":"none";
+  // 体育入力欄（手動モードのみ表示）
+  $("compPeSection").style.display=STATE.adminDataLoaded?"none":"block";
+  // リスト生成
+  const byCategory=getAdminSubjectsByCategory();
+  let html="";
+  if(STATE.adminDataLoaded&&STATE.adminStudentData){
+    // ── 読み取り専用表示 ──
+    const data=STATE.adminStudentData;
+    // 体育
+    const peEntries=(data.修得済み科目||[]).filter(e=>e.科目名==="体育");
+    const peTotal=peEntries.filter(e=>e.認定!==false).reduce((s,e)=>s+Number(e.単位数||3),0);
+    html+=`<div class="cat-block" style="margin-bottom:8px;">
+      <div class="cat-title">保健体育 ／ 体育</div>
+      <div style="padding:8px 12px;font-size:13px;">
+        <b>累計認定単位：${peTotal} 単位</b>
+        <span class="pe-badge ${peTotal>=7?"pe-ok":peTotal>=5?"pe-warn":"pe-ng"}" style="margin-left:8px;">
+          ${peTotal>=7?"✅ 必修達成":peTotal===6?"⚠️ あと1単位！":"❌ 不足"}
+        </span>
+        ${peEntries.length?`<div style="margin-top:4px;font-size:11px;color:var(--text-muted);">
+          ${peEntries.map(e=>`${e.単位数||3}単位（${e.備考||""}）${e.認定===false?"❌不認定":""}`).join("、")}
+        </div>`:""}
+      </div>
+    </div>`;
+    // 体育以外
+    Object.entries(byCategory).forEach(([cat,subjects])=>{
+      const nonPE=subjects.filter(s=>s.科目名!=="体育");
+      if(!nonPE.length)return;
+      html+=`<div class="cat-block"><div class="cat-title">${cat}</div>`;
+      nonPE.forEach(subj=>{
+        const entry=(data.修得済み科目||[]).find(e=>e.科目名===subj.科目名);
+        if(!entry){
+          html+=`<div class="comp-readonly">
+            <span class="cr-icon" style="background:#f1f5f9;color:var(--text-muted);">─</span>
+            <span class="cr-name" style="color:var(--text-muted);">${subj.科目名}</span>
+            <span class="cr-unit">${subj.単位数}単</span>
+          </div>`;
+        } else {
+          const cert=entry.認定!==false;
+          html+=`<div class="comp-readonly ${cert?"certified":"uncertified"}">
+            <span class="cr-icon" style="background:${cert?"var(--success)":"var(--danger)"};color:#fff;">
+              ${cert?"✓":"✗"}
+            </span>
+            <span class="cr-name ${cert?"":"struck"}">${subj.科目名}</span>
+            <span style="font-size:10px;font-weight:700;color:${cert?"#047857":"#991b1b"};">
+              ${cert?"認定":"不認定"}
+            </span>
+            <span class="cr-unit">${subj.単位数}単</span>
+          </div>`;
+        }
+      });
+      html+="</div>";
+    });
+  } else {
+    // ── 手動入力表示（編集可能チェックリスト）──
+    Object.entries(byCategory).forEach(([cat,subjects])=>{
+      const nonPE=subjects.filter(s=>s.科目名!=="体育");
+      if(!nonPE.length)return;
+      html+=`<div class="cat-block"><div class="cat-title">${cat}</div>`;
+      nonPE.forEach(subj=>{
+        const done=STATE.completed.has(subj.科目名);
+        const cbId="cb2_"+subj.id;
+        html+=`<div class="comp-edit ${done?"done":""}"
+          onclick="toggleDone2('${subj.科目名}','${cbId}',this)">
+          <input type="checkbox" id="${cbId}" ${done?"checked":""}
+            onclick="event.stopPropagation();toggleDone2('${subj.科目名}','${cbId}',this.closest('.comp-edit'))">
+          <span class="ce-name" title="${subj.科目名}">${subj.略称||subj.科目名}</span>
+          <span class="cr-unit">${subj.単位数}単</span>
+        </div>`;
+      });
+      html+="</div>";
+    });
+  }
+  $("compList").innerHTML=html;
+  openModal("compModal");
+}
+
+function toggleDone2(name,cbId,row){
+  if(STATE.adminDataLoaded)return; // 読み取り専用
+  if(STATE.completed.has(name)){
+    STATE.completed.delete(name);
+    row.classList.remove("done");
+    const cb=document.getElementById(cbId);if(cb)cb.checked=false;
+  } else {
+    STATE.completed.add(name);
+    row.classList.add("done");
+    const cb=document.getElementById(cbId);if(cb)cb.checked=true;
+  }
+  updateCompletedSummary();
+  rerender();
+}
+
+// ──────────────────────────────────────────────
+// 段階学習・必修条件チェック
+// ──────────────────────────────────────────────
+function stageCheck(k,completed,selected){
+  if(completed.has(k))return{ok:false,text:"修得済のため再受講不可"};
+  const pe=Number($("peCreds").value||0);
+  if(k==="体育"&&pe>=9)return{ok:false,text:"体育上限(9単位)到達"};
+  const prereqs=getAdminPrereqs();
+  for(const req of prereqs){
+    if(req.解禁?.includes(k)){
+      // 前提条件は「修得済み(completed)」のみで判定する
+      // selected（今回の受講登録で選択中）は前提として認めない
+      // allowConcurrent:true の場合は「受講中(selected)」も前提として認める
+      // allowConcurrent未設定(通常)の場合は修得済み(completed)のみ
+      const missing=req.allowConcurrent
+        ? req.前提.filter(p=>!completed.has(p)&&!selected.has(p))
+        : req.前提.filter(p=>!completed.has(p));
+      const isAnyOf=req.type==="anyOf";
+      const metCount=req.前提.length-missing.length;
+      const minMet=isAnyOf?(req.min||1):req.前提.length;
+      if(metCount<minMet){
+        const suffix=req.allowConcurrent?"（修得済みまたは受講登録中が必要）":"（受講中は不可）";
+        const text=isAnyOf
+          ?`${req.前提.join("・")}のいずれか${req.min||1}科目の修得が必要${suffix}`
+          :`${missing.join("・")}の修得が必要${suffix}`;
+        return{ok:false,text};
+      }
+    }
+  }
+  // 入門講座は修得済みの場合のみ受講不可（選択中は関係なし）
+  if(k==="数学入門講座")return(!completed.has("数学Ⅰ"))?{ok:true}:{ok:false,text:"数学Ⅰ修得済のため受講不可"};
+  if(k==="英語入門講座")return(!completed.has("英語コミュニケーションⅠ"))?{ok:true}:{ok:false,text:"英コミュⅠ修得済のため受講不可"};
+  return{ok:true};
+}
+
+function buildChecks(allSet,pe){
+  const adminReqs=getAdminRequirements();
+  if(adminReqs){
+    return adminReqs.map(req=>{
+      if(!req.type)return{name:req.名称||req.教科,ok:false,text:"ルール未設定"};
+      switch(req.type){
+        case"allOf":{const missing=req.subjects.filter(s=>!allSet.has(s));
+          return{name:req.名称,ok:missing.length===0,text:req.subjects.map(s=>`${subjectAbbr(s)}:${allSet.has(s)?"✅":"❌"}`).join("　")};}
+        case"anyOf":{const found=req.subjects.filter(s=>allSet.has(s));
+          return{name:req.名称,ok:found.length>=(req.min||1),text:`${found.map(s=>subjectAbbr(s)).join("・")||"未修得"}（${req.min||1}科目必要）`};}
+        case"scienceRule":{const cnt=req.subjects.filter(s=>allSet.has(s)).length;
+          const hasSH=allSet.has(req.sciHumanSubject||"科学と人間生活");const need=hasSH?1:(req.min||3);
+          return{name:req.名称,ok:cnt>=need,text:`${cnt}科目取得　/${need}科目必要`};}
+        case"peCredits":{return{name:req.名称,ok:pe>=(req.min||7),text:`体育：${pe}単位 ／ ${req.min||7}単位必要`};}
+        default:return{name:req.名称,ok:false,text:"不明なルールタイプ"};
+      }
+    });
+  }
+  // フォールバック
+  const sciCnt=["物理基礎","化学基礎","生物基礎","地学基礎"].filter(x=>allSet.has(x)).length;
+  const hasSH=allSet.has("科学と人間生活");
+  const arts=["音楽Ⅰ","美術Ⅰ","工芸Ⅰ","書道Ⅰ"].filter(x=>allSet.has(x)).length;
+  const home=["家庭基礎","家庭総合"].filter(x=>allSet.has(x)).length;
+  return[
+    {name:"国語",ok:allSet.has("現代の国語")&&allSet.has("言語文化"),text:"現代の国語 及び 言語文化"},
+    {name:"地歴",ok:allSet.has("地理総合")&&allSet.has("歴史総合"),text:"地理総合 及び 歴史総合"},
+    {name:"公民",ok:allSet.has("公共"),text:"公共"},
+    {name:"数学",ok:allSet.has("数学Ⅰ"),text:"数学Ⅰ"},
+    {name:"理科",ok:hasSH?sciCnt>=1:sciCnt>=3,text:hasSH?`科学と人間生活 + 基礎1科目 (${sciCnt}/1)`:`基礎から3科目 (${sciCnt}/3)`},
+    {name:"保体",ok:pe>=7&&allSet.has("保健"),text:`体育7単位以上 (計${pe}単位) 及び 保健`},
+    {name:"芸術",ok:arts>=1,text:`音楽Ⅰ/美術Ⅰ/工芸Ⅰ/書道Ⅰから1科目 (${arts}/1)`},
+    {name:"外国語",ok:allSet.has("英語コミュニケーションⅠ"),text:"英語コミュニケーションⅠ"},
+    {name:"家庭",ok:home>=1,text:`家庭基礎/家庭総合から1科目 (${home}/1)`},
+    {name:"情報",ok:allSet.has("情報Ⅰ"),text:"情報Ⅰ"},
+    {name:"探究",ok:allSet.has("総合的な探究の時間"),text:"総合的な探究の時間"},
+  ];
+}
+
+// 必修バナー更新
+function updateReqMini(selectedKeys){
+  const pe=Number($("peCreds").value||0);
+  const allSet=new Set([...STATE.completed,...selectedKeys]);
+  const checks=buildChecks(allSet,pe+(selectedKeys.has("体育")?3:0));
+  const fail=checks.filter(c=>!c.ok).length;
+  const el=$("reqMini");
+  if(fail===0){
+    el.textContent="✅ 必修条件はすべて充足の見込みです（今年度まで ＋ 次年度登録）";
+    el.className="req-mini show ok";
+  } else {
+    el.textContent=`⚠️ 未達成 ${fail}項目あります。「診断・提出」で詳細を確認してください。`;
+    el.className="req-mini show ng";
+  }
+}
+
+// ──────────────────────────────────────────────
+// 受講科目選択ロジック
+// ──────────────────────────────────────────────
+function getSlot(xy,p){return STATE.schedule?.[xy]?.find(x=>x.period===p)||null;}
+function getOption(xy,p,label){const s=getSlot(xy,p);return s?s.options.find(o=>o.label===label)||null:null;}
+function dispLabel(l){return String(l).replace(/^[0-9]+年(以上)?/,"").replace(/^[1-3][A-J]+/,"").replace(/^[1-3]/,"").trim();}
+function courseKey(opt){return opt?(opt.examSubject||dispLabel(opt.label)):"";}
+
+function eligible(opt,grade,cls){
+  const conds=opt.eligibility||[];
+  if(!conds.length)return true;
+  if(!grade)return false;
+  return conds.some(c=>{
+    if(c.type==="mingrade")return grade>=c.grade;
+    if(c.type==="exactgrade")return grade===c.grade;
+    if(c.type==="grade1classes")return grade===1&&(!cls||c.classes.includes(cls));
+    return false;
+  });
+}
+
+function canPlace(comp,xy,p,opt){
+  const cur=(comp[xy]?.[p])||[];
+  if(cur.some(x=>x.label===opt.label))return{ok:true};
+  if(!cur.length)return{ok:true};
+  if(cur.length===1){const o=cur[0];if(o.parity&&opt.parity&&o.parity!==opt.parity)return{ok:true};}
+  return{ok:false,reason:`${xy}面接${p}限に別の科目が既に登録されています`};
+}
+
+function getSelectedKeys(){
+  const s=new Set();
+  ["X","Y"].forEach(xy=>Object.entries(STATE.computed[xy]||{}).forEach(([p,items])=>
+    items.forEach(it=>{const o=getOption(xy,Number(p),it.label);if(o)s.add(courseKey(o));})
+  ));
+  return s;
+}
+
+function buildImpacts(xy,p,label){
+  const hits=[];const q=[{xy,p:Number(p),label,reason:"manual"}];const seen=new Set();
+  while(q.length){
+    const item=q.shift();const k=`${item.xy}_${item.p}_${item.label}`;
+    if(seen.has(k))continue;seen.add(k);
+    const opt=getOption(item.xy,item.p,item.label);if(!opt)continue;
+    hits.push({...item,key:courseKey(opt)});
+    if(opt.syncAcrossXY&&opt.examSubject){
+      const other=item.xy==="X"?"Y":"X";const sl=getSlot(other,item.p);
+      if(sl)sl.options.filter(o=>normE(o.examSubject)===normE(opt.examSubject))
+        .forEach(o=>q.push({xy:other,p:item.p,label:o.label,reason:"auto-xy"}));
+    }
+    // 連続科目: 全時限ペア(1-2,2-3,3-4,4-5,5-6)に対応
+    if(opt.syncConsecutive&&opt.examSubject){
+      const CPAIRS=[[1,2],[2,3],[3,4],[4,5],[5,6]];
+      for(const [a,b] of CPAIRS){
+        const op2=item.p===a?b:(item.p===b?a:null);if(op2===null)continue;
+        const sl=getSlot(item.xy,op2);
+        if(sl)sl.options.filter(o=>normE(o.examSubject)===normE(opt.examSubject))
+          .forEach(o=>q.push({xy:item.xy,p:op2,label:o.label,reason:"auto-seq"}));
+        break;
+      }
+    }
+  }
+  return hits;
+}
+
+function recompute(){
+  const comp={X:{},Y:{}};const seen=new Set();const q=[];
+  const grade=getGrade();const cls=getCls();
+  const enq=(xy,p,l,r)=>{
+    const k=`${xy}_${p}_${l}`;if(seen.has(k))return;
+    const opt=getOption(xy,p,l);if(!opt||!eligible(opt,grade,cls))return;
+    seen.add(k);q.push({xy,p,label:l,reason:r});
+  };
+  ["X","Y"].forEach(xy=>Object.entries(STATE.manual[xy]||{}).forEach(([p,ls])=>ls.forEach(l=>enq(xy,Number(p),l,"manual"))));
+  // STATE.computed(古い値)ではなく構築中のcompから選択済みキーを取得する
+  const getCompKeys=()=>{
+    const s=new Set();
+    ["X","Y"].forEach(xy=>Object.entries(comp[xy]||{}).forEach(([p,items])=>
+      items.forEach(it=>{const o=getOption(xy,Number(p),it.label);if(o)s.add(courseKey(o));})
+    ));return s;
+  };
+  while(q.length){
+    const item=q.shift();const opt=getOption(item.xy,item.p,item.label);if(!opt)continue;
+    const curKeys=getCompKeys();
+    const stage=stageCheck(courseKey(opt),STATE.completed,curKeys);if(!stage.ok)continue;
+    const place=canPlace(comp,item.xy,item.p,opt);if(!place.ok)continue;
+    if(!comp[item.xy][item.p])comp[item.xy][item.p]=[];
+    if(comp[item.xy][item.p].some(x=>x.label===item.label))continue;
+    comp[item.xy][item.p].push({label:item.label,reason:item.reason,parity:opt.parity,examSubject:opt.examSubject});
+    if(opt.syncAcrossXY&&opt.examSubject){
+      const other=item.xy==="X"?"Y":"X";const sl=getSlot(other,item.p);
+      if(sl)sl.options.filter(o=>normE(o.examSubject)===normE(opt.examSubject)).forEach(o=>enq(other,item.p,o.label,"auto-xy"));
+    }
+    // 連続科目: 全時限ペア(1-2,2-3,3-4,4-5,5-6)に対応
+    if(opt.syncConsecutive&&opt.examSubject){
+      const CPAIRS=[[1,2],[2,3],[3,4],[4,5],[5,6]];
+      for(const [a,b] of CPAIRS){
+        const op2=item.p===a?b:(item.p===b?a:null);if(op2===null)continue;
+        const sl=getSlot(item.xy,op2);
+        if(sl)sl.options.filter(o=>normE(o.examSubject)===normE(opt.examSubject)).forEach(o=>enq(item.xy,op2,o.label,"auto-seq"));
+        break;
+      }
+    }
+  }
+  STATE.computed=comp;
+}
+
+function toggleSelect(xy,p,label){
+  const isSel=(STATE.computed[xy]?.[p]||[]).some(x=>x.label===label);
+  const opt=getOption(xy,p,label);if(!opt)return;
+  const k=courseKey(opt);
+  if(isSel){
+    ["X","Y"].forEach(s=>Object.keys(STATE.manual[s]||{}).forEach(per=>{
+      STATE.manual[s][per]=(STATE.manual[s][per]||[]).filter(lbl=>{
+        const o=getOption(s,Number(per),lbl);return o?courseKey(o)!==k:true;
+      });
+    }));
+    toast(`「${subjectAbbr(k)}」の選択を解除しました`);
+  } else {
+    const grade=getGrade();const cls=getCls();
+    if(!eligible(opt,grade,cls)){toast("対象年次またはクラス外のため選択できません");return;}
+    const curKeys=getSelectedKeys();
+    const stage=stageCheck(k,STATE.completed,curKeys);
+    if(!stage.ok){toast(stage.text);return;}
+    if(curKeys.has(k)){toast(`「${k}」は既に別の時限で登録されています`);return;}
+    // 試験競合チェック（同一XY・同一時限に試験が重複する科目は選択不可）
+    const examConf=checkExamConflict(k,curKeys);
+    if(examConf.length>0){
+      const msg=examConf.map(c=>`${c.xy}試験${c.period}限「${c.with}」`).join("、");
+      toast(`⚠️ 試験時間が重複します: ${msg}`);return;
+    }
+    // XY別試験科目数チェック（各6科目以内）
+    const examCount=countExamsByXY(new Set([...curKeys,k]));
+    if(examCount.x>6){toast(`⚠️ X試験の科目数が6科目を超えます（現在${examCount.x}科目）`);return;}
+    if(examCount.y>6){toast(`⚠️ Y試験の科目数が6科目を超えます（現在${examCount.y}科目）`);return;}
+    const impacts=buildImpacts(xy,p,label);
+    const tmp=clone(STATE.computed);
+    for(const imp of impacts){
+      const io=getOption(imp.xy,imp.p,imp.label);if(!io)continue;
+      const pl=canPlace(tmp,imp.xy,imp.p,io);
+      if(!pl.ok){toast(pl.reason);return;}
+      if(!tmp[imp.xy][imp.p])tmp[imp.xy][imp.p]=[];
+      tmp[imp.xy][imp.p].push({label:imp.label,parity:io.parity});
+    }
+    const UNITS=STATE.units||FALLBACK_UNITS;
+    let total=0;const tmpKeys=new Set([...curKeys,k]);
+    tmpKeys.forEach(kk=>{total+=UNITS[kk]||0;});
+    if(total>30){toast(`登録単位数の上限(30単位)を超過します (${total}単位)`);return;}
+    if(!STATE.manual[xy][p])STATE.manual[xy][p]=[];
+    STATE.manual[xy][p].push(label);
+    toast(`「${subjectAbbr(k)}」を登録しました`);
+  }
+  rerender();
+}
+
+// ──────────────────────────────────────────────
+// レンダリング
+// ──────────────────────────────────────────────
+function switchXY(xy){
+  STATE.xy=xy;
+  $("tabX").classList.toggle("active",xy==="X");
+  $("tabY").classList.toggle("active",xy==="Y");
+  renderSlotList();
+}
+function switchPeriod(p){
+  STATE.period=p;
+  [1,2,3,4,5,6].forEach(i=>$(`pchip${i}`).classList.toggle("active",i===p));
+  renderSlotList();
+}
+function toggleFilter(){
+  STATE.showAll=!STATE.showAll;
+  $("filterBtn").classList.toggle("active",STATE.showAll);
+  $("filterBtn").textContent=STATE.showAll?"受講資格外も含め全表示":"受講可能のみ表示中";
+  renderSlotList();
+}
+
+function renderSlotList(){
+  const slot=getSlot(STATE.xy,STATE.period);
+  $("slotName").textContent=`${STATE.xy}面接 第${STATE.period}時限`;
+  $("slotTime").textContent=slot?slot.time:"";
+  const container=$("slotList");
+  if(!slot||!slot.options.length){
+    container.innerHTML=`<div style="text-align:center;padding:24px;font-size:13px;color:var(--text-muted);">
+      この時限に開講科目はありません。<br>
+      <span style="font-size:11px;">adminの開講スケジュールを確認してください。</span>
+    </div>`;return;
+  }
+  const grade=getGrade();const cls=getCls();
+  const curKeys=getSelectedKeys();
+  const UNITS=STATE.units||FALLBACK_UNITS;
+  const list=slot.options.filter(opt=>{
+    if(STATE.showAll)return true;
+    return eligible(opt,grade,cls)&&stageCheck(courseKey(opt),STATE.completed,curKeys).ok;
+  });
+  if(!list.length){
+    container.innerHTML=`<div style="text-align:center;padding:24px;font-size:13px;color:var(--text-muted);">
+      この時限に受講可能な科目はありません。<br>
+      <span style="font-size:11px;">「受講資格外も含め全表示」を押すと全科目を確認できます</span>
+    </div>`;return;
+  }
+  container.innerHTML=list.map(opt=>{
+    const k=courseKey(opt);const u=UNITS[k]||2;
+    const el=eligible(opt,grade,cls);
+    const st=stageCheck(k,STATE.completed,curKeys);
+    const isSel=(STATE.computed[STATE.xy]?.[STATE.period]||[]).find(x=>x.label===opt.label);
+    const place=canPlace(STATE.computed,STATE.xy,STATE.period,opt);
+    const isConflict=!isSel&&!place.ok;
+    const isAuto=isSel&&isSel.reason!=="manual";
+    const alreadyElse=!isSel&&curKeys.has(k);
+    // 試験競合チェック（cls2より先に定義する必要がある）
+    const examConf2=(!isSel&&el&&st.ok&&!alreadyElse&&!isConflict)?checkExamConflict(k,curKeys):[];
+    const examCount2=(!isSel&&el&&st.ok&&!alreadyElse&&!isConflict&&!examConf2.length)?countExamsByXY(new Set([...curKeys,k])):null;
+    const examOver=examCount2&&(examCount2.x>6||examCount2.y>6);
+    let cls2="s-card";
+    if(isSel)cls2+=isAuto?" auto":" sel";
+    else if(!el||!st.ok||isConflict||alreadyElse||examConf2.length>0||examOver)cls2+=" locked";
+    const badges=[`<span class="badge b-unit">${u}単位</span>`];
+    if(opt.parity==="odd")badges.push('<span class="badge b-odd">奇数回</span>');
+    if(opt.parity==="even")badges.push('<span class="badge b-even">偶数回</span>');
+    if(isAuto)badges.push('<span class="badge b-auto">連動</span>');
+    let err="";
+    if(!st.ok)err=`⚠ ${st.text}`;
+    else if(alreadyElse)err="⚠ 別の時限で登録済みです";
+    else if(isConflict)err="⚠ 同枠に別の科目が登録されています";
+    else if(examConf2.length>0)err=`⚠ 試験重複: ${examConf2.map(c=>c.xy+"試験"+c.period+"限「"+c.with+"」").join(" / ")}`;
+    else if(examOver)err=`⚠ ${examCount2.x>6?"X":"Y"}試験が6科目超過`;
+    return `<div class="${cls2}"
+      onclick="toggleSelect('${STATE.xy}',${STATE.period},'${opt.label.replace(/'/g,"\\'")}')">
+      <div class="s-info">
+        <div class="s-name">${subjectAbbr(k)}</div>
+        <div class="badges">${badges.join("")}</div>
+        ${err?`<div class="b-err">${err}</div>`:""}
+      </div>
+      <div class="s-chk"></div>
+    </div>`;
+  }).join("");
+}
+
+function renderFooter(){
+  const UNITS=STATE.units||FALLBACK_UNITS;
+  const keys=getSelectedKeys();
+  let total=0;keys.forEach(k=>{total+=UNITS[k]||0;});
+  const el=$("footVal");
+  el.textContent=`${total} 単位`;
+  el.className="foot-val "+(total>30?"over":"ok");
+  updateGradeBadges();
+  updateReqMini(keys);
+  updateCompletedSummary();
+}
+
+function renderDiag(){
+  const UNITS=STATE.units||FALLBACK_UNITS;
+  const keys=getSelectedKeys();
+  let total=0;keys.forEach(k=>{total+=UNITS[k]||0;});
+  $("diagSelected").innerHTML=keys.size?[...keys].map(k=>
+    `<span style="background:var(--primary-light);color:var(--primary-dark);
+      font-size:12px;font-weight:700;padding:5px 10px;border-radius:7px;"
+      title="${k}">
+      ${subjectAbbr(k)}(${UNITS[k]||2}単)</span>`
+  ).join(""):`<span style="font-size:13px;color:var(--text-muted);">選択中の科目はありません</span>`;
+  const allSet=new Set([...STATE.completed,...keys]);
+  const pe=Number($("peCreds").value||0)+(keys.has("体育")?3:0);
+  const checks=buildChecks(allSet,pe);
+  // 試験科目数チェック（XYそれぞれ6科目以内）
+  const examCount=countExamsByXY(keys);
+  const xOk=examCount.x<=6,yOk=examCount.y<=6;
+  // 試験競合チェック（全選択科目ペアを走査）
+  const examConflictPairs=[];
+  const examSched2=getExamSchedules();
+  const keyArr2=[...keys];
+  for(let i=0;i<keyArr2.length;i++){
+    for(let j=i+1;j<keyArr2.length;j++){
+      const sA=examSched2.filter(e=>e.科目名===keyArr2[i]);
+      const sB=examSched2.filter(e=>e.科目名===keyArr2[j]);
+      sA.forEach(a=>sB.forEach(b=>{
+        if(a.XY===b.XY&&a.period===b.period)
+          examConflictPairs.push(`${a.XY}試験${a.period}限: 「${keyArr2[i]}」vs「${keyArr2[j]}」`);
+      }));
+    }
+  }
+  $("diagChecks").innerHTML=`
+    <div style="margin-bottom:10px;font-size:12px;font-weight:700;
+      color:${total<=30?"var(--primary)":"var(--danger)"};">
+      登録単位数（次年度）: 計 ${total} 単位 (上限30単位: ${total<=30?"OK":"超過"})
+    </div>
+    <div style="margin-bottom:8px;font-size:12px;font-weight:700;">
+      📝 試験科目数: X試験 <span style="color:${xOk?"var(--success)":"var(--danger)"};">${examCount.x}科目${xOk?" ✅":" ❌ 6超過"}</span>　Y試験 <span style="color:${yOk?"var(--success)":"var(--danger)"};">${examCount.y}科目${yOk?" ✅":" ❌ 6超過"}</span>（各6科目以内）
+    </div>
+    ${examConflictPairs.length>0?`<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:12px;font-weight:700;color:#991b1b;">⚠️ 試験時間の重複があります:<br>${examConflictPairs.join("<br>")}</div>`:""}
+    ${checks.map(c=>`<div class="chk-item ${c.ok?"ok":"ng"}">
+      <span>${c.ok?"✅":"❌"} <b>【${c.name}】</b> ${c.text}</span>
+      <span>${c.ok?"充足":"未達"}</span>
+    </div>`).join("")}`;
+}
+
+function renderTimetable(){
+  const cell=(xy,p)=>{
+    const list=(STATE.computed[xy]?.[p])||[];
+    return list.length?list.map(v=>subjectAbbr(v.examSubject||dispLabel(v.label))).join("<br>"):"-";
+  };
+  // 試験スケジュールを admin_db_2026 から取得
+  const db=getAdminDB();
+  const examSched=db.examSchedules||[];
+  const EXAM_TIMES={1:"9:15〜9:55",2:"10:10〜10:50",3:"11:05〜11:45",4:"12:40〜13:20",5:"13:35〜14:15",6:"14:30〜15:10"};
+  const examCell=(xy,p)=>{
+    const items=examSched.filter(s=>s.XY===xy&&s.period===p);
+    return items.length?items.map(s=>`<span style="font-size:10px;">${s.科目名}</span>`).join("<br>"):"-";
+  };
+  const hasExam=examSched.length>0;
+  $("ttContent").innerHTML=`
+    <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:5px;">📚 面接指導スケジュール</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:center;margin-bottom:${hasExam?"12px":"0"};">
+      <thead><tr style="background:#f1f5f9;">
+        <th style="padding:5px;border:1px solid #cbd5e1;"></th>
+        ${[1,2,3,4,5,6].map(p=>`<th style="padding:5px;border:1px solid #cbd5e1;">${p}限</th>`).join("")}
+      </tr></thead>
+      <tbody>
+        <tr><th style="padding:5px;border:1px solid #cbd5e1;background:#f8fafc;font-size:11px;">X面接</th>
+          ${[1,2,3,4,5,6].map(p=>`<td style="padding:5px;border:1px solid #cbd5e1;">${cell("X",p)}</td>`).join("")}
+        </tr>
+        <tr><th style="padding:5px;border:1px solid #cbd5e1;background:#f8fafc;font-size:11px;">Y面接</th>
+          ${[1,2,3,4,5,6].map(p=>`<td style="padding:5px;border:1px solid #cbd5e1;">${cell("Y",p)}</td>`).join("")}
+        </tr>
+      </tbody>
+    </table>
+    ${hasExam?`
+    <div style="font-size:12px;font-weight:700;color:var(--warning);margin-bottom:5px;">📝 試験スケジュール</div>
+    <div style="font-size:10px;color:var(--text-muted);margin-bottom:5px;">登録した科目の試験日・時限を確認してください。</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:center;">
+      <thead><tr style="background:#fffbeb;">
+        <th style="padding:5px;border:1px solid #fcd34d;"></th>
+        ${[1,2,3,4,5,6].map(p=>`<th style="padding:5px;border:1px solid #fcd34d;font-size:10px;">${p}限<br><span style="font-weight:normal;font-size:9px;">${EXAM_TIMES[p]}</span></th>`).join("")}
+      </tr></thead>
+      <tbody>
+        <tr><th style="padding:5px;border:1px solid #fcd34d;background:#fffde7;font-size:11px;">X試験</th>
+          ${[1,2,3,4,5,6].map(p=>{
+            const items=examSched.filter(s=>s.XY==="X"&&s.period===p);
+            // 自分が選択している科目の試験のみハイライト
+            const myKeys=getSelectedKeys();
+            const mine=items.filter(s=>myKeys.has(s.科目名)||STATE.completed.has(s.科目名));
+            const others=items.filter(s=>!myKeys.has(s.科目名)&&!STATE.completed.has(s.科目名));
+            const mineHtml=mine.map(s=>`<span style="font-size:10px;font-weight:700;color:#92400e;" title="${s.科目名}">${subjectAbbr(s.科目名)}</span>`).join("<br>");
+            const otherHtml=others.map(s=>`<span style="font-size:9px;color:var(--text-muted);" title="${s.科目名}">${subjectAbbr(s.科目名)}</span>`).join("<br>");
+            return `<td style="padding:5px;border:1px solid #fcd34d;">${mineHtml}${mineHtml&&otherHtml?"<br>":""}${otherHtml}${!mineHtml&&!otherHtml?"-":""}</td>`;
+          }).join("")}
+        </tr>
+        <tr><th style="padding:5px;border:1px solid #fcd34d;background:#fffde7;font-size:11px;">Y試験</th>
+          ${[1,2,3,4,5,6].map(p=>{
+            const items=examSched.filter(s=>s.XY==="Y"&&s.period===p);
+            const myKeys=getSelectedKeys();
+            const mine=items.filter(s=>myKeys.has(s.科目名)||STATE.completed.has(s.科目名));
+            const others=items.filter(s=>!myKeys.has(s.科目名)&&!STATE.completed.has(s.科目名));
+            const mineHtml=mine.map(s=>`<span style="font-size:10px;font-weight:700;color:#92400e;" title="${s.科目名}">${subjectAbbr(s.科目名)}</span>`).join("<br>");
+            const otherHtml=others.map(s=>`<span style="font-size:9px;color:var(--text-muted);" title="${s.科目名}">${subjectAbbr(s.科目名)}</span>`).join("<br>");
+            return `<td style="padding:5px;border:1px solid #fcd34d;">${mineHtml}${mineHtml&&otherHtml?"<br>":""}${otherHtml}${!mineHtml&&!otherHtml?"-":""}</td>`;
+          }).join("")}
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:6px;font-size:10px;color:var(--text-muted);">🟡 太字=登録・修得済み科目の試験　細字=その他の科目</div>
+    `:"<div style='font-size:12px;color:var(--text-muted);margin-top:8px;'>試験スケジュールはadmin.htmlで登録してください。</div>"}`;
+}
+
+function rerender(){
+  recompute();
+  renderSlotList();
+  renderFooter();
+  // 診断・時間割はモーダルが開いている時のみ更新（毎回呼ぶとカードタップが遅くなる）
+  if(document.getElementById("diagModal")?.style.display==="flex") renderDiag();
+  if(document.getElementById("ttModal")?.style.display==="flex") renderTimetable();
+}
+
+// ──────────────────────────────────────────────
+// モーダル
+// ──────────────────────────────────────────────
+function openModal(id){
+  if(id==="diagModal"){renderDiag();}
+  if(id==="ttModal"){renderTimetable();}
+  $(id).style.display="flex";
+}
+function closeModal(id){$(id).style.display="none";}
+
+// ──────────────────────────────────────────────
+// 保存・提出
+// ──────────────────────────────────────────────
+function saveLocal(){
+  localStorage.setItem("subject_mobile_state",JSON.stringify({
+    name:$("sName").value, no:$("sNo").value,
+    credits:$("credits").value, pe:$("peCreds").value,
+    cls:$("clsSel").value,
+    completed:[...STATE.completed],
+    adminDataLoaded:STATE.adminDataLoaded,
+    manual:STATE.manual
+  }));
+  toast("端末に保存しました");
+}
+
+function loadLocal(){
+  const raw=localStorage.getItem("subject_mobile_state");if(!raw)return;
+  const d=JSON.parse(raw);
+  $("sName").value=d.name||"";$("sNo").value=d.no||"";
+  $("credits").value=d.credits||0;$("peCreds").value=d.pe||0;
+  $("clsSel").value=d.cls||"";
+  STATE.completed=new Set(d.completed||[]);
+  STATE.manual=d.manual||{X:{},Y:{}};
+  // adminから読み込んでいた場合はその設定を復元
+  if(d.adminDataLoaded){
+    STATE.adminDataLoaded=true;
+    $("peSection").style.display="none";
+    $("adminNote").style.display="block";
+    // adminDBから生徒データを再取得してUI復元
+    const no=$("sNo").value.trim();
+    if(no){
+      const db=getAdminDB();
+      const s=db.students?.find(x=>x.生徒番号===no);
+      if(s){
+        STATE.adminStudentData=s;
+        $("creditsManualSection").style.display="none";
+        $("creditsAdminSection").style.display="block";
+        $("clsGroup").style.display="none";
+        const certs=(s.修得済み科目||[]).filter(x=>x.認定!==false&&x.科目名!=="体育");
+        const totalU=certs.reduce((sum,x)=>{const u=x.単位数||(STATE.units?.[x.科目名]||2);return sum+u;},0);
+        const peTotal=(s.修得済み科目||[]).filter(x=>x.認定!==false&&x.科目名==="体育").reduce((sum,x)=>sum+Number(x.単位数||3),0);
+        const el=$("adminGradeClsLabel");
+        if(el) el.textContent=`📋 今年度: ${s.学年||1}年次${s.クラス?s.クラス+"組":""} ／ 修得済み単位: ${totalU}単位（体育除く）・体育${Math.min(peTotal,9)}単位`;
+      }
+    }
+  }
+  updateCompletedSummary();
+}
+
+function submitReg(){
+  const name=$("sName").value.trim();
+  const no=$("sNo").value.trim();
+  if(!name){toast("⚠️ 氏名を入力してください");return;}
+  const UNITS=STATE.units||FALLBACK_UNITS;
+  const grade=getGrade();const cls=$("clsSel").value||"";
+  const credits=Number($("credits").value||0);
+  const pe=Number($("peCreds").value||0);
+  const keys=getSelectedKeys();
+  let totalCredits=0;keys.forEach(k=>{totalCredits+=UNITS[k]||0;});
+  const timetableX={},timetableY={};
+  ["X","Y"].forEach(xy=>{
+    const tbl=xy==="X"?timetableX:timetableY;
+    [1,2,3,4,5,6].forEach(p=>{
+      const items=(STATE.computed[xy]?.[p])||[];
+      if(items.length)tbl[p]=items.map(v=>v.examSubject||v.label);
+    });
+  });
+  const allSet=new Set([...STATE.completed,...keys]);
+  const peTotal=pe+(keys.has("体育")?3:0);
+  const checks=buildChecks(allSet,peTotal);
+  const validationOk=checks.every(c=>c.ok);
+  const record={
+    id:"reg_"+Date.now()+"_"+Math.random().toString(36).slice(2,6),
+    timestamp:new Date().toISOString(),
+    studentName:name,studentNo:no,grade,cls,credits,peCredits:pe,
+    completed:[...STATE.completed],selectedSubjects:[...keys],
+    totalCredits,timetableX,timetableY,validationOk,
+    checks:checks.map(c=>({name:c.name,ok:c.ok})),
+    status:"submitted"
+  };
+  const existing=JSON.parse(localStorage.getItem("registrations_2026")||"[]");
+  const idx=no?existing.findIndex(r=>r.studentNo===no):-1;
+  if(idx>=0)existing[idx]=record;else existing.push(record);
+  localStorage.setItem("registrations_2026",JSON.stringify(existing));
+  // admin_db_2026の該当生徒レコードにも受講登録データを書き込む
+  // homeroom.htmlはregistrations_2026ではなくadmin_db_2026.students[].受講登録を参照するため
+  // フィールド名もhomeroom側に合わせて「単位数合計/科目リスト/チェック結果/提出日時」で保存
+  const adminDB=getAdminDB();
+  if(adminDB.students?.length){
+    const sIdx=adminDB.students.findIndex(x=>x.生徒番号===no);
+    if(sIdx>=0){
+      // 担任確認済みの場合は「再提出」ステータスにして担任に変更を通知
+      const wasConfirmed = adminDB.students[sIdx].担任確認 === true;
+      // ★ dataChangeIssues は再提出時に自動クリア（修正済みとみなす）
+      adminDB.students[sIdx].受講登録={
+        単位数合計:totalCredits,
+        科目リスト:[...keys],
+        チェック結果:checks.map(c=>({name:c.name,ok:c.ok})),
+        提出日時:new Date().toISOString(),
+        timetableX,timetableY,
+        status: wasConfirmed ? "再提出" : "提出済"
+        // dataChangeIssues は意図的に含めない → 再提出でフラグ自動解除
+      };
+      // 担任確認フラグはリセットしない（担任が「再確認」するまで「修正あり」と表示させる）
+      localStorage.setItem("admin_db_2026",JSON.stringify(adminDB));
+      // 画面上の警告バナーも消す
+      const dcBanner = document.getElementById("dataChangeBanner");
+      if(dcBanner) dcBanner.remove();
+    }
+  }
+  saveLocal();
+  const abbrList=[...keys].map(k=>subjectAbbr(k)).join("・");
+  alert(`✅ 受講登録を提出しました！${validationOk?"":" \n⚠️ 一部必修条件が未達成です。担任と確認してください。"}\n\n氏名：${name}\n次年度 登録単位数：${totalCredits}単位\n選択科目数：${keys.size}科目\n\n登録科目：${abbrList||"なし"}`);
+  toast("📋 受講登録を提出しました");
+}
+
+// ──────────────────────────────────────────────
+// 初期化
+// ──────────────────────────────────────────────
+function init(){
+  $("credits").innerHTML=Array.from({length:101},(_,i)=>
+    `<option value="${i}">${i} 単位</option>`).join("");
+  $("periodScroll").innerHTML=[1,2,3,4,5,6].map(p=>
+    `<div class="p-chip ${p===1?"active":""}" id="pchip${p}" onclick="switchPeriod(${p})">${p}限</div>`
+  ).join("");
+  STATE.schedule=generateLessonSchedule();
+  STATE.units=getAdminUnits();
+  STATE.abbrMap=getAbbrMap();
+  // adminDBにスケジュールがない場合の警告
+  const db=getAdminDB();
+  if(!db.schedules?.length){
+    const b=document.createElement("div");
+    b.style.cssText="background:#fff8e1;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400e;margin:0 0 10px;";
+    b.innerHTML="⚠️ <b>adminの開講スケジュールが未登録です。</b> admin.htmlでスケジュールを登録してください。";
+    const wrap=document.getElementById("step2");
+    if(wrap)wrap.insertBefore(b,wrap.firstChild);
+  }
+  loadLocal();
+  // 手動モードの初期説明テキスト
+  if(!STATE.adminDataLoaded){
+    const el=$("gradeDesc");
+    if(el) el.textContent="（単位数に応じて来年度学年が自動判定されます）";
+    onCreditsChange(false);
+  }
+  onPeChange();
+  updateCompletedSummary();
+  rerender();
+  updateGradeBadges();
+}
+
+init();
+</script>
+</body>
+</html>

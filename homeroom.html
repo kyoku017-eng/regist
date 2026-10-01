@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>担任サイト 2026年度</title>
+<style>
+:root{--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#eff6ff;
+  --success:#10b981;--success-bg:#ecfdf5;--warning:#f59e0b;--warning-bg:#fffbeb;
+  --danger:#ef4444;--danger-bg:#fef2f2;--text:#1e293b;--text-muted:#64748b;
+  --bg:#f1f5f9;--card:#fff;--border:#e2e8f0;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  background:var(--bg);color:var(--text);}
+.topbar{background:var(--primary);color:#fff;padding:0 20px;height:56px;
+  display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);flex-wrap:wrap;}
+.topbar-title{font-size:15px;font-weight:700;flex-shrink:0;}
+.topbar-title span{font-size:11px;background:rgba(255,255,255,.2);border-radius:4px;padding:2px 8px;margin-left:6px;}
+.cls-sel{background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.5);
+  border-radius:8px;color:#fff;padding:5px 10px;font-size:13px;font-weight:700;outline:none;cursor:pointer;}
+.cls-sel option{background:#1e40af;color:#fff;}
+.tb-btn{border:1.5px solid rgba(255,255,255,.5);background:transparent;color:#fff;
+  border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap;}
+.tb-btn:hover{background:rgba(255,255,255,.15);}
+.tb-btn.save{background:#fff;color:var(--primary);}
+.tb-btn.green{background:#10b981;border-color:#10b981;}
+.topbar-right{margin-left:auto;display:flex;gap:6px;flex-shrink:0;}
+.main{max-width:1100px;margin:0 auto;padding:16px;}
+.info-banner{border-radius:10px;padding:10px 16px;font-size:12px;margin-bottom:14px;}
+.info-banner.blue{background:#eff6ff;border:1px solid #93c5fd;color:#1d4ed8;}
+.info-banner.green{background:var(--success-bg);border:1px solid #86efac;color:#047857;}
+.info-banner.yellow{background:var(--warning-bg);border:1px solid #fcd34d;color:#92400e;}
+.stats-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;text-align:center;flex:1;min-width:120px;}
+.stat-num{font-size:24px;font-weight:800;color:var(--primary);}
+.stat-num.green{color:var(--success);}
+.stat-num.orange{color:var(--warning);}
+.stat-num.red{color:var(--danger);}
+.stat-lbl{font-size:11px;color:var(--text-muted);font-weight:600;margin-top:2px;}
+.search-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.search-inp{border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;
+  font-size:13px;outline:none;flex:1;min-width:180px;}
+.search-inp:focus{border-color:var(--primary);}
+.filter-sel{border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;
+  font-size:12px;outline:none;background:#fff;}
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);background:#fff;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead tr{background:#f8fafc;}
+th{padding:10px 12px;text-align:left;font-weight:700;color:var(--text-muted);
+  font-size:12px;border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:9px 12px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbfc;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;white-space:nowrap;}
+.b-blue{background:var(--primary-light);color:#1d4ed8;}
+.b-green{background:var(--success-bg);color:#047857;}
+.b-orange{background:var(--warning-bg);color:#92400e;}
+.b-red{background:var(--danger-bg);color:#991b1b;}
+.b-gray{background:#f1f5f9;color:#475569;}
+.b-purple{background:#f3e8ff;color:#6b21a8;}
+.btn{border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;
+  cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:4px;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-success{background:var(--success);color:#fff;}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border:1px solid #fca5a5;}
+.btn-danger:hover{background:var(--danger);color:#fff;}
+.btn-outline{background:#fff;border:1.5px solid var(--border);color:var(--text);}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+.btn-sm{padding:3px 9px;font-size:11px;}
+.tbl-actions{display:flex;gap:5px;}
+.m-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;
+  display:none;align-items:center;justify-content:center;}
+.m-overlay.open{display:flex;}
+.m-box{background:#fff;border-radius:14px;width:100%;max-width:700px;
+  max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.m-box.xl{max-width:900px;}
+.m-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;
+  justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1;}
+.m-title{font-size:15px;font-weight:700;}
+.m-body{padding:18px 20px;}
+.m-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;
+  justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:#fff;}
+.close-btn{background:none;border:none;font-size:19px;cursor:pointer;color:var(--text-muted);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-row.c3{grid-template-columns:1fr 1fr 1fr;}
+.form-row.full{grid-template-columns:1fr;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg label{font-size:12px;font-weight:700;color:var(--text-muted);}
+.fg input,.fg select,.fg textarea{border:1.5px solid var(--border);border-radius:8px;
+  padding:7px 10px;font-size:13px;color:var(--text);background:#fff;outline:none;font-family:inherit;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--primary);}
+.fg textarea{resize:vertical;min-height:60px;}
+.tabs{display:flex;background:#e2e8f0;padding:3px;border-radius:10px;margin-bottom:14px;}
+.tab-btn{flex:1;text-align:center;padding:7px 4px;font-size:12px;font-weight:700;
+  border:none;background:transparent;border-radius:7px;cursor:pointer;color:var(--text-muted);}
+.tab-btn.active{background:#fff;color:var(--primary);box-shadow:0 1px 2px rgba(0,0,0,.1);}
+.subject-cat{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:6px;}
+.subject-cat-title{background:#f1f5f9;padding:5px 10px;font-size:11px;font-weight:700;color:#475569;}
+.subj-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid #f8fafc;transition:background .1s;}
+.subj-row:last-child{border-bottom:none;}
+.subj-row.done{background:#f0fdf4;}
+.subj-row.uncert{background:#fef2f2;}
+.subj-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);cursor:pointer;}
+.subj-name{flex:1;font-size:13px;font-weight:600;}
+.subj-unit{font-size:10px;color:var(--text-muted);background:#f1f5f9;padding:1px 5px;border-radius:4px;}
+.ct-btn{padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;border:1.5px solid;cursor:pointer;}
+.ct-cert{background:var(--success-bg);color:#047857;border-color:#86efac;}
+.ct-uncert{background:var(--danger-bg);color:#991b1b;border-color:#fca5a5;}
+.pe-bar{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;margin-bottom:8px;}
+.pe-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.pe-sel{border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:13px;font-weight:700;background:#fff;outline:none;}
+.pe-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;}
+.pe-ok{background:var(--success-bg);color:#047857;}
+.pe-warn{background:var(--warning-bg);color:#92400e;}
+.pe-ng{background:var(--danger-bg);color:#991b1b;}
+.pe-entry{display:flex;gap:6px;align-items:center;background:#f8fafc;border:1px solid var(--border);
+  border-radius:6px;padding:5px 10px;margin-bottom:4px;}
+.pe-units{width:50px;text-align:center;border:1.5px solid var(--border);border-radius:5px;padding:3px;font-size:12px;font-weight:700;}
+.pe-status{font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;border:1px solid;cursor:pointer;}
+.req-item{font-size:12px;font-weight:600;padding:5px 9px;border-radius:7px;margin-bottom:3px;display:flex;justify-content:space-between;}
+.req-ok{background:var(--success-bg);border:1px solid #86efac;color:#065f46;}
+.req-ng{background:var(--danger-bg);border:1px solid #fca5a5;color:#991b1b;}
+.tt-table{width:100%;border-collapse:collapse;font-size:12px;text-align:center;}
+.tt-table th,.tt-table td{border:1px solid #cbd5e1;padding:5px;}
+.tt-table thead tr{background:#f1f5f9;}
+.confirm-card{background:var(--success-bg);border:1px solid #86efac;border-radius:8px;padding:10px 14px;margin-bottom:10px;}
+.pending-card{background:var(--warning-bg);border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:10px;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:#1e293b;color:#fff;font-size:13px;font-weight:600;
+  padding:9px 18px;border-radius:999px;z-index:200;display:none;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.empty{text-align:center;padding:40px 20px;color:var(--text-muted);}
+.empty .eicon{font-size:36px;margin-bottom:10px;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-title">👨‍🏫 担任サイト <span>2026年度</span></div>
+  <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+    <span style="font-size:12px;opacity:.8;">担当：</span>
+    <select class="cls-sel" id="gradeFilter" onchange="onGradeChange()">
+      <option value="">学年</option>
+    </select>
+    <select class="cls-sel" id="classFilter" onchange="onClassChange()" disabled>
+      <option value="">クラス</option>
+    </select>
+  </div>
+  <div class="topbar-right">
+    <button class="tb-btn" onclick="importJSON()">📥 管理データ読込</button>
+    <button class="tb-btn" onclick="addStudent()">＋ 生徒を追加</button>
+    <button class="tb-btn green" onclick="exportExcel()">📊 Excel出力</button>
+    <button class="tb-btn save" onclick="saveDB()">💾 保存</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="main">
+  <div class="info-banner blue" id="infoBanner">
+    📌 <b>担任サイト</b>：自クラスの生徒情報の管理・受講登録の確認ができます。<br>
+    「📥 管理データ読込」でadmin.htmlから書き出したJSONを読み込んでください。同じブラウザで開いている場合は自動で反映されます。
+  </div>
+  <div id="noClassMsg" class="info-banner yellow">
+    ⚠️ 学年とクラスを選択してください。
+  </div>
+  <div id="mainContent" style="display:none;">
+    <div class="stats-row" id="statsRow"></div>
+    <div class="search-bar">
+      <input class="search-inp" id="searchQ" placeholder="🔍 氏名・番号で検索..." oninput="renderList()">
+      <select class="filter-sel" id="filterStatus" onchange="renderList()">
+        <option value="all">全員</option>
+        <option value="未提出">未提出</option>
+        <option value="提出済">提出済</option>
+        <option value="確認済">確認済</option>
+        <option value="要確認">要確認</option>
+        <option value="再提出">🔄 修正あり（要再確認）</option>
+        <option value="データ変更">🔴 要修正（データ変更あり）</option>
+      </select>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>生徒番号</th>
+            <th>氏名</th>
+            <th>現学年/クラス</th>
+            <th>修得単位</th>
+            <th>必修状況</th>
+            <th>受講登録</th>
+            <th>担任確認</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="studentTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 生徒編集モーダル -->
+<div class="m-overlay" id="modalOverlay" onclick="if(event.target.id==='modalOverlay')closeModal()">
+  <div class="m-box xl" id="modalBox"></div>
+</div>
+
+<script>
+'use strict';
+
+// ======= データ管理 =======
+const STORAGE_KEY = "homeroom_db_2026";
+let HR = { students: [], class: "", grade: null, importedFrom: null };
+let _editing = null;
+
+// ── 学年・クラスフィルタのデータ取得 ──
+function getAvailableGrades() {
+  const grades = new Set();
+  const adminRaw = localStorage.getItem("admin_db_2026");
+  if(adminRaw) {
+    try {
+      const adminDB = JSON.parse(adminRaw);
+      adminDB.students.forEach(s => { if(s.学年) grades.add(Number(s.学年)); });
+    } catch(e) {}
+  }
+  HR.students.forEach(s => {
+    const g = s.現学年 || s.学年;
+    if(g) grades.add(Number(g));
+  });
+  return [...grades].sort((a,b)=>a-b);
+}
+function getAvailableClasses(grade) {
+  const classes = new Set();
+  const adminRaw = localStorage.getItem("admin_db_2026");
+  if(adminRaw && grade) {
+    try {
+      const adminDB = JSON.parse(adminRaw);
+      adminDB.students
+        .filter(s => Number(s.学年) === Number(grade))
+        .forEach(s => { if(s.クラス) classes.add(s.クラス); });
+    } catch(e) {}
+  }
+  HR.students
+    .filter(s => Number(s.現学年 || s.学年) === Number(grade))
+    .forEach(s => { if(s.クラス) classes.add(s.クラス); });
+  return [...classes].sort();
+}
+function populateGradeFilter() {
+  const grades = getAvailableGrades();
+  const sel = document.getElementById("gradeFilter");
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">学年</option>' +
+    grades.map(g => `<option value="${g}" ${cur==g?"selected":""}>${g}年次</option>`).join("");
+}
+function populateClassFilter(grade) {
+  const classes = getAvailableClasses(grade);
+  const sel = document.getElementById("classFilter");
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">クラス</option>' +
+    classes.map(c => `<option value="${c}" ${cur==c?"selected":""}>${c}組</option>`).join("");
+  sel.disabled = !grade || classes.length === 0;
+}
+
+function loadHR() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(raw) {
+    try { HR = JSON.parse(raw); }
+    catch(e) { HR = { students: [], class: "", grade: null, importedFrom: null }; }
+  }
+  if(!HR.grade) HR.grade = null;
+}
+
+function mergeFromAdmin(adminDB) {
+  const grade = HR.grade;
+  const cls = HR.class;
+  if(!grade || !cls) return;
+  // adminの生徒データを取り込む（同学年・同クラスのみ）
+  const adminStudents = adminDB.students.filter(s =>
+    Number(s.学年) === Number(grade) && s.クラス === cls
+  );
+  let updated = false;
+  adminStudents.forEach(as => {
+    const existing = HR.students.find(s => s.生徒番号 === as.生徒番号);
+    if(!existing) {
+      HR.students.push(normalizeStudent(as));
+      updated = true;
+    } else {
+      // ★修正: 受講登録を常にadminの最新で上書き
+      // 旧: !existing.受講登録 の場合のみ → 再提出が反映されないバグ
+      // 新: adminに受講登録があれば、提出日時を比較して新しい方を採用
+      if(as.受講登録) {
+        const adminTime = as.受講登録.提出日時 ? new Date(as.受講登録.提出日時).getTime() : 0;
+        const localTime = existing.受講登録?.提出日時 ? new Date(existing.受講登録.提出日時).getTime() : 0;
+        if(adminTime >= localTime) {
+          // adminが同じか新しい → 採用（再提出も確実に反映）
+          existing.受講登録 = as.受講登録;
+          updated = true;
+        }
+      }
+      // 担任確認・メモはhomeroom側を優先（adminが空の場合のみ同期）
+      if(as.担任確認 && !existing.担任確認) {
+        existing.担任確認 = as.担任確認;
+        existing.担任確認日時 = as.担任確認日時;
+        updated = true;
+      }
+    }
+  });
+  if(updated) saveDB();
+}
+
+function saveDB() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(HR));
+  toast("💾 保存しました");
+}
+
+function normalizeStudent(s) {
+  return {
+    id: s.id || uid(),
+    生徒番号: s.生徒番号 || "",
+    氏名: s.氏名 || "",
+    フリガナ: s.フリガナ || "",
+    現学年: s.現学年 || s.学年 || 1,
+    クラス: s.クラス || "",
+    修得済み科目: JSON.parse(JSON.stringify(s.修得済み科目 || [])),
+    初期パスワード: s.初期パスワード || "",
+    備考: s.備考 || "",
+    次年度学年: s.次年度学年 || null,
+    受講登録: s.受講登録 || null,
+    担任確認: s.担任確認 || false,
+    担任メモ: s.担任メモ || "",
+    更新日時: s.更新日時 || new Date().toISOString()
+  };
+}
+
+function uid() { return "hr_"+Date.now()+"_"+Math.random().toString(36).slice(2,6); }
+
+// ======= クラスフィルタ =======
+function onGradeChange() {
+  const grade = document.getElementById("gradeFilter").value;
+  HR.grade = grade ? Number(grade) : null;
+  populateClassFilter(grade);
+  document.getElementById("classFilter").value = "";
+  HR.class = "";
+  document.getElementById("noClassMsg").style.display = "block";
+  document.getElementById("mainContent").style.display = "none";
+}
+function onClassChange() {
+  const grade = document.getElementById("gradeFilter").value;
+  const cls = document.getElementById("classFilter").value;
+  HR.grade = grade ? Number(grade) : null;
+  HR.class = cls;
+  const selected = grade && cls;
+  document.getElementById("noClassMsg").style.display = selected ? "none" : "block";
+  document.getElementById("mainContent").style.display = selected ? "block" : "none";
+  if(selected) {
+    // adminDBから同学年・同クラスの生徒を自動インポート
+    const adminRaw = localStorage.getItem("admin_db_2026");
+    if(adminRaw) {
+      try {
+        const adminDB = JSON.parse(adminRaw);
+        mergeFromAdmin(adminDB);
+      } catch(e) {}
+    }
+    renderAll();
+  }
+}
+
+// ======= 統計 =======
+function getClassStudents() {
+  const grade = HR.grade;
+  const cls = HR.class;
+  if(!grade || !cls) return [];
+  return HR.students.filter(s =>
+    Number(s.現学年 || s.学年) === Number(grade) && s.クラス === cls
+  );
+}
+
+function getRegStatus(s) {
+  if(!s.受講登録) return "未提出";
+  // データ変更による無効化（最優先で表示）
+  if(s.受講登録.dataChangeIssues?.length > 0) return "データ変更";
+  // 担任確認済み後に再提出されたケース（要再確認）
+  if(s.担任確認 && s.受講登録.status === "再提出") return "再提出";
+  if(s.担任確認) return "確認済";
+  if(s.受講登録.status === "要確認") return "要確認";
+  return s.受講登録.status || "提出済";
+}
+
+function renderStats() {
+  const students = getClassStudents();
+  const total = students.length;
+  const submitted = students.filter(s => s.受講登録).length;
+  const confirmed = students.filter(s => s.担任確認).length;
+  const pending = submitted - confirmed;
+  const issue = students.filter(s => {
+    const v = validateStudent(s);
+    return v.status !== "ok";
+  }).length;
+  const gradeClsLabel = `${HR.grade}年${HR.class}組`;
+  document.getElementById("statsRow").innerHTML = `
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-lbl">${gradeClsLabel} 生徒数</div></div>
+    <div class="stat-card"><div class="stat-num green">${submitted}</div><div class="stat-lbl">受講登録 提出済</div></div>
+    <div class="stat-card"><div class="stat-num orange">${pending}</div><div class="stat-lbl">担任確認 待ち</div></div>
+    <div class="stat-card"><div class="stat-num">${confirmed}</div><div class="stat-lbl">担任確認 完了</div></div>
+    <div class="stat-card"><div class="stat-num red">${issue}</div><div class="stat-lbl">必修未達</div></div>
+  `;
+}
+
+// ======= 生徒一覧 =======
+function renderList() {
+  const q = document.getElementById("searchQ").value.toLowerCase();
+  const fs = document.getElementById("filterStatus").value;
+  let students = getClassStudents().filter(s =>
+    q === "" || s.氏名?.includes(q) || s.生徒番号?.includes(q)
+  );
+  if(fs !== "all") students = students.filter(s => getRegStatus(s) === fs);
+
+  const tbody = document.getElementById("studentTbody");
+  if(!students.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="eicon">👤</div><p>生徒データがありません</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = students.map(s => {
+    const v = validateStudent(s);
+    const status = getRegStatus(s);
+    const totalU = Object.values(v.creditMap).reduce((a,b)=>a+b,0);
+    const pe = v.peCredits;
+    const hasDataIssue = s.受講登録?.dataChangeIssues?.length > 0;
+    const statusBadge = hasDataIssue
+      ? '<span class="badge b-red">🔴 要修正（データ変更あり）</span>'
+      : ({
+          "未提出": '<span class="badge b-gray">未提出</span>',
+          "提出済": '<span class="badge b-blue">📋 提出済</span>',
+          "確認済": '<span class="badge b-green">✅ 確認済</span>',
+          "要確認": '<span class="badge b-orange">⚠️ 要確認</span>',
+          "再提出": '<span class="badge b-red">🔄 修正あり（要再確認）</span>'
+        }[status] || '<span class="badge b-gray">-</span>');
+    const confirmBadge = s.担任確認
+      ? '<span class="badge b-green">✅ 確認済</span>'
+      : (s.受講登録 ? '<span class="badge b-orange">未確認</span>' : '<span class="badge b-gray">-</span>');
+    const reqBadge = v.status === "ok" ? '<span class="badge b-green">✅ 充足</span>'
+      : v.status === "danger" || v.status === "urgent" ? `<span class="badge b-red">❌ ${v.failCount}項目不足</span>`
+      : '<span class="badge b-orange">⚠️ 要確認</span>';
+    return `<tr>
+      <td><b>${s.生徒番号||"-"}</b></td>
+      <td><b>${s.氏名||"-"}</b></td>
+      <td><span class="badge b-blue">${s.現学年||"-"}年</span> ${s.クラス||"-"}組</td>
+      <td>${totalU}単<br><span style="font-size:10px;color:${pe>=7?"var(--success)":pe>=6?"var(--warning)":"var(--danger)"};">体育${pe}/7</span></td>
+      <td>${reqBadge}</td>
+      <td>${statusBadge}${s.受講登録 ? `<br><span style="font-size:10px;color:var(--text-muted);">${s.受講登録.単位数合計||0}単位/${(s.受講登録.科目リスト||[]).length}科目</span>` : ""}</td>
+      <td>${confirmBadge}</td>
+      <td><div class="tbl-actions">
+        <button class="btn btn-primary btn-sm" onclick="editStudent('${s.id}')">✏️ 編集</button>
+        <button class="btn btn-outline btn-sm" onclick="viewReg('${s.id}')">📋 登録確認</button>
+      </div></td>
+    </tr>`;
+  }).join("");
+}
+
+function renderAll() {
+  // ★ 表示更新のたびにadmin_db_2026の最新受講登録を取り込む
+  // （homeroom表示中に生徒がindex.htmlで再提出した場合に即反映）
+  const adminRaw = localStorage.getItem("admin_db_2026");
+  if(adminRaw && HR.grade && HR.class) {
+    try {
+      const adminDB = JSON.parse(adminRaw);
+      mergeFromAdmin(adminDB);
+    } catch(e) {}
+  }
+  renderStats();
+  renderList();
+}
+
+// ======= 生徒追加・編集 =======
+function addStudent() {
+  if(!HR.grade || !HR.class) { toast("⚠️ 学年とクラスを選択してください"); return; }
+  _editing = {
+    id: uid(), 生徒番号: "", 氏名: "", フリガナ: "",
+    現学年: HR.grade, クラス: HR.class, 修得済み科目: [],
+    初期パスワード: genPW(), 備考: "",
+    次年度学年: null, 受講登録: null,
+    担任確認: false, 担任メモ: "", 更新日時: new Date().toISOString()
+  };
+  openStudentModal(false);
+}
+
+function editStudent(id) {
+  const s = HR.students.find(x => x.id === id);
+  if(!s) return;
+  _editing = JSON.parse(JSON.stringify(s));
+  openStudentModal(true);
+}
+
+function deleteStudent(id) {
+  const s = HR.students.find(x => x.id === id);
+  if(!confirm(`「${s?.氏名}」を削除しますか？`)) return;
+  HR.students = HR.students.filter(x => x.id !== id);
+  saveDB();
+  renderAll();
+  toast("🗑️ 削除しました");
+}
+
+function genPW() {
+  const yr = new Date().getFullYear();
+  const c = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  let r = "";
+  for(let i=0;i<4;i++) r += c[Math.floor(Math.random()*c.length)];
+  return `${yr}${r}`;
+}
+
+function openStudentModal(isEdit) {
+  const s = _editing;
+  const subjectsByCategory = getSubjectsByCategory();
+  const completedMap = {};
+  (s.修得済み科目||[]).forEach(e => {
+    if(!completedMap[e.科目名]) completedMap[e.科目名] = [];
+    completedMap[e.科目名].push(e);
+  });
+  const peEntries = (s.修得済み科目||[]).filter(e => e.科目名==="体育");
+  const peTotal = peEntries.filter(e => e.認定!==false).reduce((sum,e)=>sum+Number(e.単位数||3),0);
+
+  let subjectHTML = "";
+  Object.entries(subjectsByCategory).forEach(([cat, subjects]) => {
+    const nonPE = subjects.filter(x => x.科目名!=="体育");
+    if(!nonPE.length) return;
+    subjectHTML += `<div class="subject-cat"><div class="subject-cat-title">${cat}</div>`;
+    nonPE.forEach(subj => {
+      const entries = completedMap[subj.科目名]||[];
+      const isCompleted = entries.length>0;
+      const isCertified = isCompleted && entries.every(e=>e.認定!==false);
+      const isUncert = isCompleted && entries.some(e=>e.認定===false);
+      const idx = isCompleted ? _editing.修得済み科目.indexOf(entries[0]) : -1;
+      const cbId = "sc_"+subj.id;
+      subjectHTML += `<div class="subj-row ${isCompleted?(isCertified?"done":"uncert"):""}">
+        <input type="checkbox" id="${cbId}" ${isCompleted?"checked":""}
+          onchange="toggleSubj('${subj.科目名}',${subj.単位数},this.checked)">
+        <label for="${cbId}" class="subj-name" style="${isUncert?"text-decoration:line-through;color:var(--text-muted);":""}">${subj.科目名}</label>
+        <span class="subj-unit">${subj.単位数}単位</span>
+        ${isCompleted?`<button class="ct-btn ${isCertified?"ct-cert":"ct-uncert"}" onclick="toggleCert(${idx})">${isCertified?"✅認定":"❌不認定"}</button>`:""}
+      </div>`;
+    });
+    subjectHTML += "</div>";
+  });
+
+  // 体育エントリ
+  const peHTML = peEntries.map((e,i) => {
+    const realIdx = _editing.修得済み科目.indexOf(e);
+    return `<div class="pe-entry">
+      <span style="font-size:11px;color:var(--text-muted);">体育</span>
+      <input type="number" min="1" max="9" value="${e.単位数||3}" class="pe-units"
+        onchange="updatePE(${realIdx},'単位数',this.value)"> 単位
+      <button class="pe-status ${e.認定!==false?"ct-cert":"ct-uncert"}" onclick="togglePECert(${realIdx})">
+        ${e.認定!==false?"✅認定":"❌不認定"}
+      </button>
+      <input type="text" value="${e.備考||""}" placeholder="備考（1年次など）"
+        style="flex:1;border:1.5px solid var(--border);border-radius:5px;padding:3px 7px;font-size:11px;"
+        onchange="updatePE(${realIdx},'備考',this.value)">
+      <button class="btn btn-danger btn-sm" onclick="removePE(${realIdx})">✕</button>
+    </div>`;
+  }).join("");
+
+  document.getElementById("modalBox").className = "m-box xl";
+  document.getElementById("modalBox").innerHTML = `
+    <div class="m-hdr">
+      <div class="m-title">${isEdit?"✏️ 生徒情報を編集":"➕ 生徒を追加"} ${s.氏名?"— "+s.氏名:""}</div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-basic" onclick="switchTab('basic')">① 基本情報（今年度）</button>
+        <button class="tab-btn" id="tab-subj" onclick="switchTab('subj')">② 修得済み科目</button>
+        <button class="tab-btn" id="tab-check" onclick="switchTab('check')">③ 必修条件チェック</button>
+      </div>
+      <!-- ① 基本情報 -->
+      <div id="t-basic">
+        <div class="form-row c3">
+          <div class="fg"><label>生徒番号 *</label>
+            <input id="f-no" value="${s.生徒番号}" placeholder="例: 1A001" oninput="_editing.生徒番号=this.value"></div>
+          <div class="fg"><label>氏名 *</label>
+            <input id="f-name" value="${s.氏名}" placeholder="山田 太郎" oninput="_editing.氏名=this.value"></div>
+          <div class="fg"><label>フリガナ</label>
+            <input id="f-furi" value="${s.フリガナ}" placeholder="ヤマダ タロウ" oninput="_editing.フリガナ=this.value"></div>
+        </div>
+        <div class="form-row">
+          <div class="fg"><label>現学年（今年度）</label>
+            <select id="f-grade" onchange="_editing.現学年=parseInt(this.value)">
+              ${[1,2,3].map(g=>`<option value="${g}" ${s.現学年==g?"selected":""}>${g}年次（今年度）</option>`).join("")}
+            </select></div>
+          <div class="fg"><label>クラス（今年度）</label>
+            <select id="f-cls" onchange="_editing.クラス=this.value">
+              ${["A","B","C","D","E","F","G","H","I","J"].map(c=>`<option value="${c}" ${s.クラス===c?"selected":""}>${c}組</option>`).join("")}
+            </select></div>
+        </div>
+        <div class="form-row">
+          <div class="fg"><label>初期パスワード</label>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input id="f-pw" value="${s.初期パスワード}" oninput="_editing.初期パスワード=this.value"
+                style="flex:1;font-family:monospace;font-size:12px;">
+              <button class="btn btn-outline btn-sm" onclick="regenPW()">🔄</button>
+            </div></div>
+          <div class="fg"><label>備考</label>
+            <input id="f-note" value="${s.備考}" oninput="_editing.備考=this.value"></div>
+        </div>
+        <div class="form-row full" style="margin-top:4px;">
+          <div class="fg"><label>担任メモ（内部メモ）</label>
+            <textarea id="f-memo" oninput="_editing.担任メモ=this.value">${s.担任メモ}</textarea></div>
+        </div>
+      </div>
+      <!-- ② 修得済み科目 -->
+      <div id="t-subj" style="display:none;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">
+          ✅チェック = 修得済み。認定/不認定は単位認定状態を示します。
+        </div>
+        <div class="pe-bar">
+          <div class="pe-row">
+            <span style="font-size:12px;font-weight:700;color:#92400e;">体育 修得済み単位</span>
+            <select class="pe-sel" id="pe-dummy" disabled>
+              <option>累計 ${peTotal} 単位 ${peTotal>=7?"✅":""}${peTotal===6?"⚠️あと1単位":""}</option>
+            </select>
+            <span class="pe-badge ${peTotal>=7?"pe-ok":peTotal>=5?"pe-warn":"pe-ng"}">${peTotal>=7?"必修達成":peTotal>=5?`あと${7-peTotal}単位`:"不足"}</span>
+          </div>
+          <div id="pe-entries">${peHTML}</div>
+          <button class="btn btn-outline btn-sm" onclick="addPE()" style="margin-top:4px;">＋ 体育単位を追加</button>
+        </div>
+        ${subjectHTML}
+      </div>
+      <!-- ③ 必修条件チェック -->
+      <div id="t-check" style="display:none;">
+        <div id="check-content"></div>
+      </div>
+    </div>
+    <div class="m-footer">
+      <button class="btn btn-outline" onclick="closeModal()">キャンセル</button>
+      <button class="btn btn-primary" onclick="saveStudent()">💾 保存</button>
+    </div>`;
+  document.getElementById("modalOverlay").classList.add("open");
+  refreshCheck();
+}
+
+function switchTab(tab) {
+  ["basic","subj","check"].forEach(t => {
+    document.getElementById("t-"+t).style.display = t===tab?"block":"none";
+    document.getElementById("tab-"+t).classList.toggle("active",t===tab);
+  });
+  if(tab==="check") refreshCheck();
+}
+
+function regenPW() {
+  const pw = genPW();
+  _editing.初期パスワード = pw;
+  const el = document.getElementById("f-pw");
+  if(el) { el.value = pw; el.style.background="#fef3c7"; setTimeout(()=>el.style.background="",600); }
+}
+
+function toggleSubj(name, units, checked) {
+  if(checked) {
+    if(!_editing.修得済み科目.find(e=>e.科目名===name))
+      _editing.修得済み科目.push({科目名:name,単位数:units,認定:true});
+  } else {
+    _editing.修得済み科目 = _editing.修得済み科目.filter(e=>e.科目名!==name);
+  }
+  openStudentModal(true); // re-render
+  switchTab("subj");
+  refreshCheck();
+}
+
+function toggleCert(idx) {
+  const e = _editing.修得済み科目[idx];
+  if(!e) return;
+  e.認定 = e.認定===false ? true : false;
+  const btn = event.target;
+  btn.className = `ct-btn ${e.認定!==false?"ct-cert":"ct-uncert"}`;
+  btn.textContent = e.認定!==false?"✅認定":"❌不認定";
+  const row = btn.closest(".subj-row");
+  if(row) { row.classList.toggle("done",e.認定!==false); row.classList.toggle("uncert",e.認定===false); }
+  refreshCheck();
+}
+
+function addPE() {
+  _editing.修得済み科目.push({科目名:"体育",単位数:3,認定:true,備考:""});
+  openStudentModal(true); switchTab("subj");
+}
+function removePE(idx) {
+  _editing.修得済み科目.splice(idx,1);
+  openStudentModal(true); switchTab("subj");
+}
+function togglePECert(idx) {
+  const e = _editing.修得済み科目[idx];
+  if(!e) return;
+  e.認定 = e.認定===false ? true : false;
+  const btn = event.target;
+  btn.className = `pe-status ${e.認定!==false?"ct-cert":"ct-uncert"}`;
+  btn.textContent = e.認定!==false?"✅認定":"❌不認定";
+  refreshCheck();
+}
+function updatePE(idx,field,value) {
+  const e = _editing.修得済み科目[idx];
+  if(!e) return;
+  if(field==="単位数") e.単位数=Number(value)||3;
+  else if(field==="備考") e.備考=value;
+  refreshCheck();
+}
+
+function refreshCheck() {
+  const el = document.getElementById("check-content");
+  if(!el||!_editing) return;
+  const v = validateStudent(_editing);
+  let html = v.status==="ok"
+    ? `<div style="background:var(--success-bg);border:1px solid #86efac;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;font-weight:700;color:#047857;">✅ 全ての必修条件を充足しています</div>`
+    : `<div style="background:var(--danger-bg);border:1px solid #fca5a5;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;font-weight:700;color:#991b1b;">❌ 未達成 ${v.failCount}項目</div>`;
+  v.checks.forEach(c => {
+    html += `<div class="req-item ${c.ok?"req-ok":"req-ng"}">
+      <span>${c.ok?"✅":"❌"} <b>【${c.name}】</b> ${c.detail}</span>
+      <span>${c.ok?"充足":"未達"}</span>
+    </div>`;
+  });
+  const totalU = Object.values(v.creditMap).reduce((a,b)=>a+b,0);
+  html += `<div style="background:#f8fafc;border-radius:8px;padding:8px 12px;margin-top:10px;font-size:12px;"><b>修得済み単位数合計：${totalU} 単位</b></div>`;
+  el.innerHTML = html;
+}
+
+function saveStudent() {
+  if(!_editing.氏名.trim()) { toast("⚠️ 氏名を入力してください"); return; }
+  _editing.更新日時 = new Date().toISOString();
+  const idx = HR.students.findIndex(s => s.id === _editing.id);
+  if(idx >= 0) HR.students[idx] = _editing;
+  else HR.students.push(_editing);
+  saveDB();
+  closeModal();
+  renderAll();
+  toast("✅ 保存しました");
+}
+
+// ======= 受講登録確認モーダル =======
+function viewReg(id) {
+  const s = HR.students.find(x => x.id === id);
+  if(!s) return;
+  const reg = s.受講登録;
+  let content = "";
+  if(!reg) {
+    content = `<div class="pending-card">
+      📭 <b>まだ受講登録が提出されていません。</b><br>
+      生徒がindex.htmlで受講登録を提出すると、ここに表示されます。
+    </div>`;
+  } else {
+    const isResubmit = s.担任確認 && reg.status === "再提出";
+    const hasDataIssue2 = reg.dataChangeIssues?.length > 0;
+    const stBadge = hasDataIssue2
+      ? '<span class="badge b-red">🔴 要修正（データ変更あり）</span>'
+      : isResubmit ? '<span class="badge b-red">🔄 修正あり（要再確認）</span>'
+      : s.担任確認 ? '<span class="badge b-green">✅ 確認済</span>' : '<span class="badge b-orange">未確認</span>';
+    const subjects = (reg.科目リスト||[]).map(k=>`<span class="badge b-blue" style="margin:2px;">${k}</span>`).join("");
+    const checks = (reg.チェック結果||[]).map(c=>`<div class="req-item ${c.ok?"req-ok":"req-ng"}">
+      <span>${c.ok?"✅":"❌"} <b>【${c.name}】</b></span><span>${c.ok?"充足":"未達"}</span>
+    </div>`).join("");
+    const cell = (xy, p) => {
+      const list = (reg["timetable"+xy]||{})[p]||[];
+      return list.length ? list.join("<br>") : "-";
+    };
+    content = `
+      ${hasDataIssue2 ? `<div style="background:#fef2f2;border:2px solid #ef4444;border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:13px;font-weight:700;color:#991b1b;">
+        🔴 <b>担任による修得科目データの変更により、この受講登録に問題が発生しています。</b><br>
+        <div style="margin-top:6px;font-size:12px;font-weight:normal;">
+          ${reg.dataChangeIssues.map(i=>`⚠️ <b>${i.科目名}</b>：${i.理由}`).join("<br>")}
+        </div>
+        <div style="margin-top:6px;font-size:11px;font-weight:normal;color:#7f1d1d;">
+          生徒に受講登録の修正・再提出を依頼してください。再提出されるとこの警告は解除されます。
+          ${reg.dataChangedAt ? `（検出日時：${new Date(reg.dataChangedAt).toLocaleString("ja-JP")}）` : ""}
+        </div>
+      </div>` : ""}
+      ${(!hasDataIssue2 && isResubmit) ? `<div style="background:#fef2f2;border:2px solid #ef4444;border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:13px;font-weight:700;color:#991b1b;">
+        🔄 <b>担任確認後に生徒が再提出しました。内容を確認し、再度「担任確認済み」にチェックしてください。</b>
+        ${s.担任確認日時 ? `<div style="font-size:11px;font-weight:normal;margin-top:4px;">前回確認日時：${new Date(s.担任確認日時).toLocaleString("ja-JP")}</div>` : ""}
+      </div>` : ""}
+      <div class="${isResubmit?"pending-card":s.担任確認?"confirm-card":"pending-card"}">
+        ${stBadge}
+        <b>${isResubmit?"再提出あり（要再確認）":s.担任確認?"担任確認済み":"担任確認が必要です"}</b>
+        ${reg.提出日時 ? `<span style="font-size:11px;color:var(--text-muted);margin-left:8px;">提出：${new Date(reg.提出日時).toLocaleString("ja-JP")}</span>` : ""}
+      </div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:6px;">登録科目 (${reg.単位数合計||0}単位)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px;">${subjects||"<span style='color:var(--text-muted);font-size:13px;'>なし</span>"}</div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:6px;">時間割プレビュー</div>
+      <table class="tt-table" style="margin-bottom:14px;">
+        <thead><tr><th></th>${[1,2,3,4,5,6].map(p=>`<th>${p}限</th>`).join("")}</tr></thead>
+        <tbody>
+          <tr><th>X面接</th>${[1,2,3,4,5,6].map(p=>`<td>${cell("X",p)}</td>`).join("")}</tr>
+          <tr><th>Y面接</th>${[1,2,3,4,5,6].map(p=>`<td>${cell("Y",p)}</td>`).join("")}</tr>
+        </tbody>
+      </table>
+      <div style="font-weight:700;font-size:13px;margin-bottom:6px;">必修条件チェック</div>
+      <div style="margin-bottom:14px;">${checks}</div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:6px;">担任確認・メモ</div>
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:700;">
+          <input type="checkbox" id="chk-confirm" ${s.担任確認?"checked":""} style="width:18px;height:18px;accent-color:var(--success);">
+          担任確認済み
+        </label>
+      </div>
+      <div class="fg" style="margin-bottom:6px;">
+        <label>担任メモ（任意）</label>
+        <textarea id="reg-memo" style="resize:vertical;min-height:60px;border:1.5px solid var(--border);border-radius:8px;padding:8px;font-size:13px;">${s.担任メモ||""}</textarea>
+      </div>`;
+  }
+  document.getElementById("modalBox").className = "m-box xl";
+  document.getElementById("modalBox").innerHTML = `
+    <div class="m-hdr">
+      <div class="m-title">📋 受講登録確認 — ${s.氏名} (${s.生徒番号})</div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="m-body">${content}</div>
+    <div class="m-footer">
+      ${reg ? `<button class="btn btn-success" onclick="confirmReg('${id}')">✅ 確認保存</button>` : ""}
+      <button class="btn btn-outline" onclick="closeModal()">閉じる</button>
+    </div>`;
+  document.getElementById("modalOverlay").classList.add("open");
+}
+
+function confirmReg(id) {
+  const s = HR.students.find(x => x.id === id);
+  if(!s) return;
+  s.担任確認 = document.getElementById("chk-confirm").checked;
+  s.担任メモ = document.getElementById("reg-memo").value;
+  if(s.受講登録 && s.担任確認) {
+    s.受講登録.status = "確認済";
+    s.担任確認日時 = new Date().toISOString(); // ★ 確認日時を記録（再提出検知に使用）
+    updateAdminDB(s);
+  } else if(!s.担任確認) {
+    s.担任確認日時 = null;
+    if(s.受講登録) s.受講登録.status = "提出済";
+    updateAdminDB(s);
+  }
+  s.更新日時 = new Date().toISOString();
+  saveDB();
+  closeModal();
+  renderAll();
+  toast(`✅ ${s.氏名}の受講登録を${s.担任確認?"確認済み":"未確認"}に設定しました`);
+}
+
+function updateAdminDB(s) {
+  const adminRaw = localStorage.getItem("admin_db_2026");
+  if(!adminRaw) return;
+  try {
+    const adminDB = JSON.parse(adminRaw);
+    const idx = adminDB.students.findIndex(x => x.生徒番号 === s.生徒番号);
+    if(idx>=0) {
+      // 担任確認関連フィールドのみ書き戻す（スプレッド全上書き廃止でスキーマ汚染を防止）
+      adminDB.students[idx].担任確認 = s.担任確認;
+      adminDB.students[idx].担任メモ = s.担任メモ;
+      if(s.受講登録) adminDB.students[idx].受講登録 = s.受講登録;
+      adminDB.students[idx].更新日時 = s.更新日時;
+      localStorage.setItem("admin_db_2026", JSON.stringify(adminDB));
+    }
+  } catch(e) {}
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.remove("open");
+  _editing = null;
+}
+
+// ======= インポート/エクスポート =======
+function importJSON() {
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = ".json";
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if(data.students) {
+          // admin format
+          const cls = HR.class;
+          const filtered = data.students.filter(s => !cls || s.クラス === cls);
+          filtered.forEach(as => {
+            const ns = normalizeStudent(as);
+            const existing = HR.students.findIndex(s => s.生徒番号 === ns.生徒番号);
+            if(existing>=0) HR.students[existing] = {...HR.students[existing], ...ns};
+            else HR.students.push(ns);
+          });
+          HR.importedFrom = file.name;
+        } else if(Array.isArray(data)) {
+          // array format
+          data.forEach(as => {
+            const ns = normalizeStudent(as);
+            const existing = HR.students.findIndex(s => s.生徒番号 === ns.生徒番号);
+            if(existing>=0) HR.students[existing] = {...HR.students[existing], ...ns};
+            else HR.students.push(ns);
+          });
+        }
+        saveDB();
+        renderAll();
+        toast(`✅ ${HR.class||"全クラス"}の生徒データを読み込みました`);
+      } catch(err) {
+        toast("⚠️ JSONの読み込みに失敗しました: " + err.message);
+      }
+    };
+    reader.readAsText(file, "UTF-8");
+  };
+  input.click();
+}
+
+// ══════════════════════════════════════════════════════
+// Excel出力（SpreadsheetML形式 .xls）
+// ══════════════════════════════════════════════════════
+function exportExcel() {
+  const grade = HR.grade;
+  const cls = HR.class;
+  if(!grade || !cls) { toast("⚠️ 学年とクラスを選択してください"); return; }
+  const students = getClassStudents();
+  if(!students.length) { toast("⚠️ 出力する生徒データがありません"); return; }
+
+  const esc = v => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const fmtDate = ts => ts ? new Date(ts).toLocaleString('ja-JP') : '';
+
+  // 生徒一覧シート
+  const hdrs = ['生徒番号','氏名','フリガナ','今年度学年','クラス','修得単位(体育除)','体育単位',
+    '必修状況','受講登録','担任確認','登録科目','登録単位数','提出日時','担任メモ'];
+
+  const dataRows = students.map(s => {
+    const v = validateStudent(s);
+    const nonPE = Object.entries(v.creditMap).filter(([k])=>k!=='体育').reduce((a,[,v])=>a+v,0);
+    const reg = s.受講登録;
+    const hasIssue = reg?.dataChangeIssues?.length > 0;
+    const status = hasIssue ? '要修正' : getRegStatus(s);
+    return [
+      s.生徒番号||'', s.氏名||'', s.フリガナ||'',
+      String(s.現学年||''), s.クラス||'',
+      nonPE, v.peCredits,
+      v.status==='ok' ? '充足' : `未達(${v.failCount}項目)`,
+      status,
+      s.担任確認 ? '確認済' : (reg ? '未確認' : '-'),
+      reg ? (reg.科目リスト||[]).join('・') : '',
+      reg ? (reg.単位数合計||0) : '',
+      fmtDate(reg?.提出日時),
+      s.担任メモ||''
+    ];
+  });
+
+  // 受講登録詳細シート（提出済みのみ）
+  const regStudents = students.filter(s=>s.受講登録);
+  const regHdrs = ['生徒番号','氏名','登録単位数','X1限','X2限','X3限','X4限','X5限','X6限','Y1限','Y2限','Y3限','Y4限','Y5限','Y6限','必修充足','提出日時'];
+  const regRows = regStudents.map(s => {
+    const reg = s.受講登録;
+    const tX = reg.timetableX || {};
+    const tY = reg.timetableY || {};
+    const cell = (tbl,p) => (tbl[p]||[]).join('/');
+    return [
+      s.生徒番号||'', s.氏名||'', reg.単位数合計||0,
+      cell(tX,1),cell(tX,2),cell(tX,3),cell(tX,4),cell(tX,5),cell(tX,6),
+      cell(tY,1),cell(tY,2),cell(tY,3),cell(tY,4),cell(tY,5),cell(tY,6),
+      (reg.チェック結果||[]).every(c=>c.ok) ? '充足' : '未達',
+      fmtDate(reg.提出日時)
+    ];
+  });
+
+  const makeCell = v => {
+    const isNum = typeof v === 'number';
+    return `<Cell><Data ss:Type="${isNum?'Number':'String'}">${esc(v)}</Data></Cell>`;
+  };
+  const makeRow = (cells, style='') =>
+    `<Row${style?` ss:StyleID="${style}"`:''}>${cells.map(makeCell).join('')}</Row>`;
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+  <Styles>
+    <Style ss:ID="hdr">
+      <Alignment ss:Horizontal="Center"/>
+      <Font ss:Bold="1" ss:Color="#FFFFFF"/>
+      <Interior ss:Color="#2563EB" ss:Pattern="Solid"/>
+    </Style>
+    <Style ss:ID="ok"><Interior ss:Color="#D1FAE5" ss:Pattern="Solid"/></Style>
+    <Style ss:ID="ng"><Interior ss:Color="#FEF2F2" ss:Pattern="Solid"/></Style>
+  </Styles>
+  <Worksheet ss:Name="${esc(grade+'年'+cls+'組_生徒一覧')}">
+    <Table ss:DefaultColumnWidth="80">
+      ${makeRow(hdrs,'hdr')}
+      ${dataRows.map(row=>{
+        const isOk = row[7]==='充足';
+        return makeRow(row, isOk?'ok':'ng');
+      }).join('\n      ')}
+    </Table>
+    <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+      <FreezePanes/><FrozenNoSplit/><SplitHorizontal>1</SplitHorizontal><TopRowBottomPane>1</TopRowBottomPane>
+    </WorksheetOptions>
+  </Worksheet>
+  <Worksheet ss:Name="${esc(grade+'年'+cls+'組_受講登録詳細')}">
+    <Table ss:DefaultColumnWidth="70">
+      ${makeRow(regHdrs,'hdr')}
+      ${regRows.map(row=>makeRow(row)).join('\n      ')}
+    </Table>
+  </Worksheet>
+</Workbook>`;
+
+  const blob = new Blob(['\uFEFF'+xml], {type:'application/vnd.ms-excel;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `担任サイト_${grade}年${cls}組_${new Date().toISOString().slice(0,10)}.xls`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`📊 ${grade}年${cls}組のExcelファイルを出力しました`);
+}
+
+// JSON エクスポート（管理データ共有用・内部利用）
+function exportJSON() {
+  const cls = HR.class;
+  const students = cls ? HR.students.filter(s=>s.クラス===cls) : HR.students;
+  const data = {
+    exportedAt: new Date().toISOString(),
+    class: cls || "all",
+    year: 2026,
+    students: students
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `homeroom_${cls||"all"}_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`📤 ${cls}組のデータをエクスポートしました`);
+}
+
+// ======= 必修条件チェック =======
+function getAdminSubjects() {
+  const adminRaw = localStorage.getItem("admin_db_2026");
+  if(!adminRaw) return FALLBACK_SUBJECTS;
+  try {
+    const db = JSON.parse(adminRaw);
+    return db.subjects?.length ? db.subjects : FALLBACK_SUBJECTS;
+  } catch(e) { return FALLBACK_SUBJECTS; }
+}
+
+function getSubjectsByCategory() {
+  const map = {};
+  getAdminSubjects().forEach(s => {
+    const c = s.教科||"その他";
+    (map[c]||(map[c]=[])).push(s);
+  });
+  return map;
+}
+
+function getAdminRequirements() {
+  const adminRaw = localStorage.getItem("admin_db_2026");
+  if(!adminRaw) return null;
+  try {
+    const db = JSON.parse(adminRaw);
+    return db.requirements?.必修科目 || null;
+  } catch(e) { return null; }
+}
+
+function validateStudent(student) {
+  const 修得済み = student.修得済み科目||[];
+  const creditMap = {};
+  修得済み.filter(s=>s.認定!==false).forEach(s=>{
+    if(s.科目名==="体育"){creditMap["体育"]=(creditMap["体育"]||0)+Number(s.単位数||3);}
+    else{creditMap[s.科目名]=Number(s.単位数||2);}
+  });
+  const completed = new Set(Object.keys(creditMap));
+  const peCredits = creditMap["体育"]||0;
+  const adminReqs = getAdminRequirements();
+  let checks;
+  if(adminReqs) {
+    checks = adminReqs.map(req => {
+      if(!req.type) return {name:req.名称||"",ok:false,detail:"ルール未設定"};
+      switch(req.type) {
+        case"allOf":{const m=req.subjects.filter(s=>!completed.has(s));return{name:req.名称,ok:m.length===0,detail:req.subjects.map(s=>`${s}:${completed.has(s)?"✅":"❌"}`).join("　")};}
+        case"anyOf":{const f=req.subjects.filter(s=>completed.has(s));return{name:req.名称,ok:f.length>=(req.min||1),detail:`${f.join("・")||"未修得"}（${req.min||1}科目必要）`};}
+        case"scienceRule":{const cnt=req.subjects.filter(s=>completed.has(s)).length;const hasSH=completed.has(req.sciHumanSubject||"科学と人間生活");const need=hasSH?1:(req.min||3);return{name:req.名称,ok:cnt>=need,detail:`${cnt}科目取得/${need}科目必要`};}
+        case"peCredits":{return{name:req.名称,ok:peCredits>=(req.min||7),detail:`体育：${peCredits}単位/${req.min||7}単位必要`};}
+        default:return{name:req.名称,ok:false,detail:"不明なタイプ"};
+      }
+    });
+  } else {
+    // fallback
+    const sci = ["物理基礎","化学基礎","生物基礎","地学基礎"].filter(x=>completed.has(x)).length;
+    const hasSH = completed.has("科学と人間生活");
+    const arts = ["音楽Ⅰ","美術Ⅰ","工芸Ⅰ","書道Ⅰ"].filter(x=>completed.has(x)).length;
+    const home = ["家庭基礎","家庭総合"].filter(x=>completed.has(x)).length;
+    checks = [
+      {name:"国語",ok:completed.has("現代の国語")&&completed.has("言語文化"),detail:"現代の国語・言語文化"},
+      {name:"地歴",ok:completed.has("地理総合")&&completed.has("歴史総合"),detail:"地理総合・歴史総合"},
+      {name:"公民",ok:completed.has("公共"),detail:"公共"},
+      {name:"数学",ok:completed.has("数学Ⅰ"),detail:"数学Ⅰ"},
+      {name:"理科",ok:hasSH?sci>=1:sci>=3,detail:hasSH?`科学と人間生活+基礎1科目(${sci}/1)`:`基礎3科目(${sci}/3)`},
+      {name:"保体",ok:peCredits>=7&&completed.has("保健"),detail:`体育${peCredits}単位・保健`},
+      {name:"芸術",ok:arts>=1,detail:`芸術から1科目(${arts}/1)`},
+      {name:"外国語",ok:completed.has("英語コミュニケーションⅠ"),detail:"英語コミュニケーションⅠ"},
+      {name:"家庭",ok:home>=1,detail:`家庭から1科目(${home}/1)`},
+      {name:"情報",ok:completed.has("情報Ⅰ"),detail:"情報Ⅰ"},
+      {name:"探究",ok:completed.has("総合的な探究の時間"),detail:"総合的な探究の時間"},
+    ];
+  }
+  const failCount = checks.filter(c=>!c.ok).length;
+  // 体育があと1単位不足（5〜6単位）の生徒をurgentとして検出
+  const urgentCount = checks.filter(c=>
+    !c.ok && c.name && c.name.includes("体育") && (creditMap["体育"]||0) >= 5 && (creditMap["体育"]||0) < 7
+  ).length;
+  const status = urgentCount>0?"urgent":failCount>0?"danger":"ok";
+  return {checks,failCount,urgentCount,completed,creditMap,peCredits,status};
+}
+
+const FALLBACK_SUBJECTS=[
+  {id:"s01",教科:"国語",科目名:"現代の国語",略称:"現国",単位数:2},
+  {id:"s02",教科:"国語",科目名:"言語文化",略称:"言文",単位数:2},
+  {id:"s03",教科:"国語",科目名:"論理国語",略称:"論理国語",単位数:4},
+  {id:"s04",教科:"国語",科目名:"文学国語",略称:"文学国語",単位数:4},
+  {id:"s05",教科:"国語",科目名:"国語表現",略称:"国語表現",単位数:4},
+  {id:"s06",教科:"国語",科目名:"古典探究",略称:"古典探究",単位数:4},
+  {id:"s07",教科:"地理歴史",科目名:"地理総合",略称:"地総",単位数:2},
+  {id:"s08",教科:"地理歴史",科目名:"歴史総合",略称:"歴総",単位数:2},
+  {id:"s09",教科:"地理歴史",科目名:"日本史探究",略称:"日本史探究",単位数:4},
+  {id:"s10",教科:"地理歴史",科目名:"世界史探究",略称:"世界史探究",単位数:4},
+  {id:"s11",教科:"公民",科目名:"公共",略称:"公共",単位数:2},
+  {id:"s12",教科:"公民",科目名:"倫理",略称:"倫理",単位数:2},
+  {id:"s13",教科:"公民",科目名:"政治・経済",略称:"政経",単位数:2},
+  {id:"s14",教科:"数学",科目名:"数学Ⅰ",略称:"数学Ⅰ",単位数:3},
+  {id:"s15",教科:"数学",科目名:"数学Ⅱ",略称:"数学Ⅱ",単位数:4},
+  {id:"s16",教科:"数学",科目名:"数学Ａ",略称:"数学A",単位数:2},
+  {id:"s17",教科:"数学",科目名:"数学Ｂ",略称:"数学B",単位数:2},
+  {id:"s18",教科:"数学",科目名:"数学入門講座",略称:"数学入門",単位数:3},
+  {id:"s19",教科:"理科",科目名:"物理基礎",略称:"物理基礎",単位数:2},
+  {id:"s20",教科:"理科",科目名:"化学基礎",略称:"化学基礎",単位数:2},
+  {id:"s21",教科:"理科",科目名:"生物基礎",略称:"生物基礎",単位数:2},
+  {id:"s22",教科:"理科",科目名:"地学基礎",略称:"地学基礎",単位数:2},
+  {id:"s23",教科:"保健体育",科目名:"体育",略称:"体育",単位数:3},
+  {id:"s24",教科:"保健体育",科目名:"保健",略称:"保健",単位数:2},
+  {id:"s25",教科:"芸術",科目名:"音楽Ⅰ",略称:"音楽Ⅰ",単位数:2},
+  {id:"s26",教科:"芸術",科目名:"美術Ⅰ",略称:"美術Ⅰ",単位数:2},
+  {id:"s27",教科:"芸術",科目名:"工芸Ⅰ",略称:"工芸Ⅰ",単位数:2},
+  {id:"s_b",教科:"芸術",科目名:"書道Ⅰ",略称:"書道Ⅰ",単位数:2},
+  {id:"s28",教科:"外国語",科目名:"英語コミュニケーションⅠ",略称:"英語コミⅠ",単位数:3},
+  {id:"s29",教科:"外国語",科目名:"英語コミュニケーションⅡ",略称:"英語コミⅡ",単位数:4},
+  {id:"s30",教科:"外国語",科目名:"論理・表現Ⅰ",略称:"論理表現Ⅰ",単位数:3},
+  {id:"s31",教科:"外国語",科目名:"英語入門講座",略称:"英語入門",単位数:3},
+  {id:"s_hk",教科:"家庭",科目名:"家庭基礎",略称:"家庭基礎",単位数:2},
+  {id:"s32",教科:"家庭",科目名:"家庭総合",略称:"家庭総合",単位数:4},
+  {id:"s33",教科:"家庭",科目名:"消費生活",略称:"消費生活",単位数:3},
+  {id:"s34",教科:"家庭",科目名:"保育基礎",略称:"保育基礎",単位数:3},
+  {id:"s35",教科:"家庭",科目名:"フードデザイン",略称:"フードデザイン",単位数:4},
+  {id:"s36",教科:"情報",科目名:"情報Ⅰ",略称:"情報Ⅰ",単位数:2},
+  {id:"s37",教科:"商業",科目名:"ビジネス基礎",略称:"ビジ基礎",単位数:3},
+  {id:"s38",教科:"商業",科目名:"ビジネス・コミュニケーション",略称:"ビジコミ",単位数:3},
+  {id:"s39",教科:"商業",科目名:"ビジネス法規",略称:"ビジ法規",単位数:3},
+  {id:"s40",教科:"商業",科目名:"簿記",略称:"簿記",単位数:4},
+  {id:"s41",教科:"総合",科目名:"総合的な探究の時間",略称:"総合探究",単位数:3},
+];
+
+// ======= トースト =======
+let _toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.style.display="block";
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>t.style.display="none",2500);
+}
+
+// ======= 初期化 =======
+loadHR();
+// 学年・クラスフィルタを生徒データから動的生成
+populateGradeFilter();
+// 学年・クラスが保存されていれば復元
+if(HR.grade) {
+  document.getElementById("gradeFilter").value = HR.grade;
+  populateClassFilter(HR.grade);
+  if(HR.class) {
+    document.getElementById("classFilter").value = HR.class;
+    onClassChange();
+  }
+}
+</script>
+</body>
+</html>
